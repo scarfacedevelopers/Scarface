@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KALIYUG' INPIRATION</title> — Course Registration</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,800;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   ROOT & RESET
+============================================================ */
+:root {
+  --cream: #FAF7F0;
+  --ivory: #F4EDD8;
+  --parchment: #EBE0C4;
+  --parchment2: #E0D4B0;
+  --leather: #5C3210;
+  --leather2: #3E1F08;
+  --gold: #C9933A;
+  --gold2: #A87020;
+  --gold3: #E8C07A;
+  --ink: #1C1710;
+  --ink2: #4A3F2F;
+  --ink3: #8A7860;
+  --cobalt: #1A3A6B;
+  --sage: #4A6B40;
+  --red: #C0392B;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html,body { width:100%; min-height:100vh; overflow-x:hidden; }
+body {
+  background: #2C1A0A;
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(90,50,20,0.6) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 50%, rgba(60,30,10,0.5) 0%, transparent 60%),
+    repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.03) 4px),
+    repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(0,0,0,0.02) 4px);
+  font-family: 'DM Sans', sans-serif;
+  color: var(--ink);
+}
+
+/* ============================================================
+   LANDING PAGE
+============================================================ */
+#landing {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 40px 24px;
+  position: relative;
+}
+.landing-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(36px, 6vw, 72px);
+  font-weight: 800;
+  color: var(--gold3);
+  text-align: center;
+  line-height: 1;
+  margin-bottom: 8px;
+  text-shadow: 0 2px 20px rgba(201,147,58,0.4);
+  animation: fadeDown 0.8s ease both;
+}
+.landing-title em { font-style: italic; color: #F0D090; font-weight: 400; }
+.landing-sub {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px; font-style: italic;
+  color: rgba(240,208,144,0.65);
+  text-align: center;
+  margin-bottom: 56px;
+  animation: fadeDown 0.8s 0.1s ease both;
+}
+.courses-row {
+  display: flex; flex-wrap: wrap;
+  justify-content: center; gap: 16px;
+  max-width: 1100px; width: 100%;
+  animation: fadeUp 0.8s 0.2s ease both;
+}
+.c-card {
+  background: linear-gradient(145deg, #4A2E0E, #2E1A06);
+  border: 1px solid rgba(201,147,58,0.25);
+  border-radius: 18px;
+  padding: 28px 24px 24px;
+  width: 200px;
+  cursor: pointer;
+  position: relative; overflow: hidden;
+  transition: transform 0.35s cubic-bezier(.34,1.56,.64,1),
+              box-shadow 0.35s ease,
+              border-color 0.25s;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.c-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(201,147,58,0.12), transparent 55%);
+  opacity: 0; transition: opacity 0.3s;
+}
+.c-card:hover { transform: translateY(-8px) scale(1.03); box-shadow: 0 24px 60px rgba(0,0,0,0.6); border-color: var(--gold); }
+.c-card:hover::before { opacity: 1; }
+.c-card:active { transform: translateY(-3px) scale(0.99); }
+.c-emoji { font-size: 30px; }
+.c-name { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--gold3); }
+.c-desc { font-family: 'Cormorant Garamond', serif; font-size: 13px; color: rgba(240,208,144,0.55); font-style: italic; line-height: 1.5; }
+.c-fee { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 800; color: var(--gold); margin-top: auto; }
+.c-fee span { font-size: 11px; font-weight: 400; color: rgba(240,208,144,0.45); }
+.c-arrow {
+  position: absolute; bottom: 20px; right: 20px;
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--gold); color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  transition: transform 0.3s cubic-bezier(.34,1.56,.64,1);
+}
+.c-card:hover .c-arrow { transform: translateX(3px) scale(1.15); }
+
+/* ============================================================
+   OVERLAY
+============================================================ */
+#overlay {
+  position: fixed; inset: 0;
+  background: rgba(10,6,2,0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  z-index: 500;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+#overlay.show { opacity: 1; pointer-events: all; }
+
+/* ============================================================
+   BOOK WRAPPER  —  perspective container
+============================================================ */
+#book-wrap {
+  perspective: 2800px;
+  perspective-origin: 50% 48%;
+  width: min(920px, 96vw);
+}
+
+/* ============================================================
+   THE BOOK  —  open spread (always two pages visible)
+============================================================ */
+#book {
+  width: 100%;
+  display: flex;
+  position: relative;
+  transform-origin: center center;
+  /* Entry animation plays once when book opens */
+}
+#book.book-enter {
+  animation: bookEnter 0.9s cubic-bezier(0.22,1,0.36,1) both;
+}
+@keyframes bookEnter {
+  0%   { opacity:0; transform: rotateX(55deg) rotateY(-25deg) scale(0.1); filter: blur(14px); }
+  40%  { opacity:1; filter: blur(0); transform: rotateX(16deg) rotateY(-8deg) scale(0.62); }
+  68%  { transform: rotateX(-3deg) rotateY(3deg) scale(1.05); }
+  84%  { transform: rotateX(1deg) rotateY(-1deg) scale(0.97); }
+  100% { transform: rotateX(0) rotateY(0) scale(1); }
+}
+
+/* Book crumble-exit */
+#book.book-crumble {
+  animation: bookCrumble 1.2s cubic-bezier(0.55,0,1,0.45) forwards;
+}
+@keyframes bookCrumble {
+  0%   { transform: scale(1) rotateZ(0deg); filter: blur(0); opacity: 1; }
+  20%  { transform: scale(1.04) rotateZ(-1deg); }
+  40%  { transform: scale(0.92) rotateZ(2deg) rotateX(8deg); filter: blur(1px); }
+  60%  { transform: scale(0.7) rotateZ(-4deg) rotateX(20deg) translateY(30px); filter: blur(3px); opacity: 0.7; }
+  80%  { transform: scale(0.35) rotateZ(8deg) rotateX(45deg) translateY(80px); filter: blur(8px); opacity: 0.3; }
+  100% { transform: scale(0.05) rotateZ(15deg) rotateX(70deg) translateY(160px); filter: blur(18px); opacity: 0; }
+}
+
+/* ── SHARED page base ── */
+.book-page {
+  flex: 1;
+  background: var(--ivory);
+  min-height: 580px;
+  position: relative;
+  overflow: hidden;
+}
+/* Parchment texture lines */
+.book-page::after {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    repeating-linear-gradient(0deg,
+      transparent, transparent 27px,
+      rgba(160,130,80,0.09) 28px);
+  pointer-events: none; z-index: 0;
+}
+/* Left page */
+#page-left {
+  border-radius: 8px 0 0 8px;
+  padding: 44px 36px 36px 48px;
+  display: flex; flex-direction: column;
+  box-shadow:
+    inset -10px 0 28px rgba(60,30,0,0.10),
+    -6px 0 50px rgba(0,0,0,0.55),
+    0 50px 100px rgba(0,0,0,0.5);
+  /* Aged left edge */
+  border-left: 3px solid rgba(90,55,15,0.5);
+}
+/* Right page */
+#page-right {
+  border-radius: 0 8px 8px 0;
+  padding: 44px 48px 36px 36px;
+  display: flex; flex-direction: column;
+  box-shadow:
+    inset 10px 0 28px rgba(60,30,0,0.10),
+    6px 0 50px rgba(0,0,0,0.55),
+    0 50px 100px rgba(0,0,0,0.5);
+  border-right: 3px solid rgba(90,55,15,0.5);
+}
+/* Aged parchment gradient */
+#page-left  { background: linear-gradient(165deg, #F5EDD5 0%, #EDE0BB 40%, #E6D6A8 100%); }
+#page-right { background: linear-gradient(195deg, #F5EDD5 0%, #EDE0BB 40%, #E6D6A8 100%); }
+
+/* Book spine */
+#book-spine {
+  width: 14px; flex-shrink: 0;
+  background: linear-gradient(180deg,
+    #7A4E10 0%, #C9933A 20%, #E8C07A 50%, #C9933A 80%, #7A4E10 100%);
+  box-shadow:
+    0 0 18px rgba(201,147,58,0.7),
+    inset 2px 0 4px rgba(255,255,255,0.15),
+    inset -2px 0 4px rgba(0,0,0,0.25);
+  z-index: 10;
+}
+
+/* Leather covers (top/bottom strips) */
+#book::before, #book::after {
+  content: '';
+  position: absolute; left: -12px; right: -12px;
+  height: 16px; z-index: 15;
+  background: linear-gradient(90deg, #3E1F08, #6B3A14, #8B5020, #6B3A14, #3E1F08);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+}
+#book::before { top: -10px; }
+#book::after  { bottom: -10px; }
+/* Leather side covers */
+.leather-left, .leather-right {
+  position: absolute; top: -10px; bottom: -10px;
+  width: 14px; z-index: 14;
+  background: linear-gradient(180deg, #3E1F08, #6B3A14 30%, #8B5020 50%, #6B3A14 70%, #3E1F08);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.6);
+}
+.leather-left  { left: -12px; border-radius: 6px 0 0 6px; }
+.leather-right { right: -12px; border-radius: 0 6px 6px 0; }
+
+/* Page number */
+.pg-num {
+  position: absolute; bottom: 14px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px; color: rgba(100,80,50,0.45);
+  font-style: italic;
+}
+.pg-num.left  { left: 28px; }
+.pg-num.right { right: 28px; }
+
+/* ============================================================
+   PAGE FLIP  — the turning page element sits on top of right page
+   and flips from right-to-left (originates at left = spine)
+============================================================ */
+#flip-page {
+  position: absolute;
+  /* spans the RIGHT half of the book */
+  top: 0; bottom: 0;
+  left: 50%;            /* starts at spine */
+  width: calc(50% - 7px); /* same width as one page */
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  z-index: 100;
+  /* hidden until flip triggered */
+  display: none;
+  cursor: default;
+}
+#flip-page .flip-front,
+#flip-page .flip-back {
+  position: absolute; inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 0 6px 6px 0;
+  overflow: hidden;
+}
+/* Front = the old right page content (agree page) */
+#flip-page .flip-front {
+  background: linear-gradient(195deg, #F5EDD5 0%, #EDE0BB 40%, #E6D6A8 100%);
+  box-shadow:
+    inset 10px 0 28px rgba(60,30,0,0.10),
+    inset 0 0 0 1px rgba(160,120,60,0.15);
+}
+#flip-page .flip-front::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(160,130,80,0.09) 28px);
+  pointer-events: none;
+}
+/* Back = blank (new page backing) */
+#flip-page .flip-back {
+  background: linear-gradient(165deg, #F0E6C8 0%, #E8D9AC 40%, #DFCEA0 100%);
+  transform: rotateY(180deg);
+  box-shadow:
+    inset -10px 0 28px rgba(60,30,0,0.10);
+}
+#flip-page .flip-back::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(160,130,80,0.09) 28px);
+  pointer-events: none;
+}
+
+/* The flip animation */
+#flip-page.flipping {
+  display: block;
+  animation: pageFlip 1.1s cubic-bezier(0.645, 0.045, 0.355, 1.000) forwards;
+}
+@keyframes pageFlip {
+  0%   { transform: rotateY(0deg); }
+  /* Page lifts slightly first */
+  10%  { transform: rotateY(-8deg); }
+  100% { transform: rotateY(-180deg); }
+}
+
+/* Curl shadow: as page lifts, cast a shadow on underlying page */
+#flip-page.flipping::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 40px;
+  background: linear-gradient(90deg, rgba(0,0,0,0.18), transparent);
+  z-index: 200;
+  animation: curlShadow 1.1s forwards;
+}
+@keyframes curlShadow {
+  0%   { opacity: 0; }
+  25%  { opacity: 1; }
+  100% { opacity: 0.3; }
+}
+
+/* ============================================================
+   LEFT PAGE CONTENT: Course Info
+============================================================ */
+.course-tag {
+  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--gold2); margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+  position: relative; z-index: 1;
+}
+.course-tag::before,
+.course-tag::after { content: '—'; }
+.book-course-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(24px, 3.2vw, 40px);
+  font-weight: 800; color: var(--ink);
+  line-height: 1.1; margin-bottom: 4px;
+  position: relative; z-index: 1;
+}
+.fee-box {
+  display: flex; align-items: baseline; gap: 8px;
+  margin: 14px 0;
+  padding: 12px 16px;
+  background: rgba(201,147,58,0.1);
+  border: 1px solid rgba(201,147,58,0.3);
+  border-radius: 8px;
+  position: relative; z-index: 1;
+}
+.fee-label { font-size: 11px; color: var(--ink3); }
+.fee-amt {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px; font-weight: 800; color: var(--gold2);
+}
+.fee-yr { font-size: 13px; color: var(--ink3); }
+.info-divider {
+  width: 100%; height: 1px;
+  background: linear-gradient(90deg, rgba(160,120,60,0.4), transparent);
+  margin: 10px 0;
+  position: relative; z-index: 1;
+}
+.info-body { flex: 1; overflow-y: auto; position: relative; z-index: 1; display: flex; flex-direction: column; gap: 10px; }
+.info-body::-webkit-scrollbar { width: 3px; }
+.info-body::-webkit-scrollbar-thumb { background: rgba(160,120,60,0.3); border-radius: 2px; }
+.i-section h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 13px; font-weight: 700;
+  color: var(--ink); margin-bottom: 4px;
+  display: flex; align-items: center; gap: 6px;
+}
+.i-section h4::before { content: '•'; color: var(--gold); font-size: 16px; line-height: 1; }
+.i-section p { font-family: 'Cormorant Garamond', serif; font-size: 14.5px; color: var(--ink2); line-height: 1.65; }
+.i-section ul { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+.i-section ul li {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px; color: var(--ink2); line-height: 1.5;
+  padding-left: 14px; position: relative;
+}
+.i-section ul li::before { content: '—'; position: absolute; left: 0; color: var(--gold2); font-size: 12px; }
+
+/* Agree row on LEFT page bottom */
+.agree-row {
+  margin-top: auto; padding-top: 14px;
+  position: relative; z-index: 1;
+}
+.agree-check-label {
+  display: flex; align-items: center; gap: 10px;
+  cursor: pointer; user-select: none;
+  font-size: 10.5px; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--ink3); margin-bottom: 12px;
+}
+.agree-check-label input[type=checkbox] {
+  appearance: none; -webkit-appearance: none;
+  width: 18px; height: 18px; flex-shrink: 0;
+  border: 1.5px solid rgba(160,120,60,0.5);
+  border-radius: 4px; background: rgba(255,255,255,0.5);
+  cursor: pointer; position: relative;
+  transition: background 0.2s, border-color 0.2s;
+}
+.agree-check-label input[type=checkbox]:checked {
+  background: var(--gold); border-color: var(--gold);
+}
+.agree-check-label input[type=checkbox]:checked::after {
+  content: '✓'; position: absolute;
+  top: 50%; left: 50%; transform: translate(-50%,-50%);
+  color: white; font-size: 11px; font-weight: 700;
+}
+.btn-proceed {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 28px;
+  background: var(--cobalt);
+  color: white; border: none;
+  border-radius: 50px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px; font-weight: 600;
+  cursor: pointer;
+  opacity: 0.35; pointer-events: none;
+  transition: opacity 0.3s, transform 0.3s cubic-bezier(.34,1.56,.64,1), box-shadow 0.3s;
+}
+.btn-proceed.on { opacity: 1; pointer-events: all; }
+.btn-proceed.on:hover { transform: scale(1.06); box-shadow: 0 8px 24px rgba(26,58,107,0.5); }
+
+/* ============================================================
+   RIGHT PAGE CONTENT: Agree page
+============================================================ */
+.right-deco {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 16px; position: relative; z-index: 1;
+}
+.right-star { font-size: 56px; opacity: 0.12; line-height: 1; }
+.right-deco-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic; font-size: 18px;
+  color: var(--ink3); text-align: center; line-height: 1.9;
+}
+
+/* ============================================================
+   PAGE 2 CONTENT: Form left + Submit right
+   These are hidden divs that replace left/right page inner content
+   after the flip completes
+============================================================ */
+/* Form fields */
+.form-head {
+  position: relative; z-index: 1; margin-bottom: 18px;
+}
+.form-head-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(20px, 2.8vw, 30px);
+  font-weight: 800; color: var(--ink); line-height: 1.1;
+}
+.form-head-title em {
+  font-style: italic; color: var(--gold2); font-weight: 400;
+}
+.form-head-sub {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px; color: var(--ink3); font-style: italic; margin-top: 4px;
+}
+.course-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 12px;
+  background: rgba(201,147,58,0.12);
+  border: 1px solid rgba(201,147,58,0.25);
+  border-radius: 6px; font-size: 12px;
+  color: var(--gold2); margin-bottom: 16px;
+  position: relative; z-index: 1;
+}
+.form-fields { display: flex; flex-direction: column; gap: 11px; position: relative; z-index: 1; }
+.f-group { display: flex; flex-direction: column; gap: 4px; }
+.f-group label {
+  font-size: 9.5px; letter-spacing: 1.8px; text-transform: uppercase;
+  color: var(--ink3); font-weight: 600;
+}
+.f-group input {
+  height: 38px;
+  background: rgba(255,255,255,0.55);
+  border: 1.5px solid rgba(160,120,60,0.25);
+  border-radius: 8px;
+  padding: 0 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px; color: var(--ink);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+.f-group input:focus {
+  border-color: var(--gold);
+  background: rgba(255,255,255,0.8);
+  box-shadow: 0 0 0 3px rgba(201,147,58,0.12);
+}
+.f-group input::placeholder { color: rgba(74,63,47,0.35); }
+.f-row { display: flex; gap: 10px; }
+.f-row .f-group { flex: 1; }
+
+/* Right page 2: confirm + submit */
+.submit-side {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: flex-start; justify-content: center;
+  gap: 20px; position: relative; z-index: 1;
+  padding-top: 20px;
+}
+.submit-deco {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(22px, 3vw, 34px);
+  font-weight: 800; color: var(--ink); line-height: 1.2;
+}
+.submit-deco em { font-style: italic; color: var(--gold2); font-weight: 400; }
+.submit-sub {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic; font-size: 15px;
+  color: var(--ink3); line-height: 1.7; max-width: 260px;
+}
+.confirm-label {
+  display: flex; align-items: flex-start; gap: 10px;
+  cursor: pointer; user-select: none;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14.5px; color: var(--ink2); line-height: 1.55;
+  max-width: 300px;
+}
+.confirm-label input[type=checkbox] {
+  appearance: none; -webkit-appearance: none;
+  width: 18px; height: 18px; flex-shrink: 0;
+  margin-top: 2px;
+  border: 1.5px solid rgba(160,120,60,0.5);
+  border-radius: 4px; background: rgba(255,255,255,0.5);
+  cursor: pointer; position: relative;
+  transition: background 0.2s, border-color 0.2s;
+}
+.confirm-label input[type=checkbox]:checked {
+  background: var(--sage); border-color: var(--sage);
+}
+.confirm-label input[type=checkbox]:checked::after {
+  content: '✓'; position: absolute;
+  top: 50%; left: 50%; transform: translate(-50%,-50%);
+  color: white; font-size: 11px; font-weight: 700;
+}
+.btn-submit {
+  width: 100%; max-width: 280px;
+  height: 50px;
+  background: linear-gradient(135deg, var(--gold2), var(--gold));
+  color: white; border: none;
+  border-radius: 10px;
+  font-family: 'Playfair Display', serif;
+  font-size: 16px; font-weight: 700;
+  cursor: pointer; letter-spacing: 0.3px;
+  opacity: 0.3; pointer-events: none;
+  transition: opacity 0.3s, transform 0.3s cubic-bezier(.34,1.56,.64,1), box-shadow 0.3s;
+  position: relative; overflow: hidden;
+}
+.btn-submit.on { opacity: 1; pointer-events: all; }
+.btn-submit.on:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 12px 32px rgba(168,112,32,0.5); }
+.btn-submit::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+}
+
+/* ============================================================
+   CLOSE BUTTON
+============================================================ */
+#btn-close {
+  position: fixed; top: 20px; right: 20px;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: rgba(240,216,160,0.12);
+  border: 1px solid rgba(201,147,58,0.25);
+  color: rgba(240,216,160,0.7); font-size: 18px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  z-index: 600;
+  transition: all 0.3s;
+}
+#btn-close:hover { transform: rotate(90deg) scale(1.1); color: #F0D090; border-color: var(--gold); }
+
+/* ============================================================
+   SUCCESS SCREEN
+============================================================ */
+#success {
+  position: fixed; inset: 0;
+  background: var(--leather2);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 18px; z-index: 900;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+#success.show { opacity: 1; pointer-events: all; }
+.succ-icon {
+  width: 84px; height: 84px; border-radius: 50%;
+  background: linear-gradient(135deg, #3A7A40, #5CAF60);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 38px; color: white;
+  box-shadow: 0 16px 48px rgba(60,122,64,0.5);
+  animation: popIn 0.7s cubic-bezier(.34,1.56,.64,1) both;
+}
+.succ-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 40px; font-weight: 800;
+  color: var(--gold3);
+  text-shadow: 0 2px 20px rgba(201,147,58,0.4);
+  animation: fadeUp 0.6s 0.15s ease both;
+}
+.succ-sub {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px; font-style: italic;
+  color: rgba(240,208,144,0.6);
+  animation: fadeUp 0.6s 0.25s ease both;
+}
+.btn-home {
+  margin-top: 12px; padding: 13px 36px;
+  background: var(--gold); color: white; border: none;
+  border-radius: 50px; font-family: 'DM Sans', sans-serif;
+  font-size: 15px; font-weight: 600; cursor: pointer;
+  transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), box-shadow 0.3s;
+  animation: fadeUp 0.6s 0.35s ease both;
+}
+.btn-home:hover { transform: scale(1.06); box-shadow: 0 8px 28px rgba(201,147,58,0.4); }
+
+/* ============================================================
+   KEYFRAMES
+============================================================ */
+@keyframes fadeDown { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0); } }
+@keyframes fadeUp   { from { opacity:0; transform:translateY(20px);  } to { opacity:1; transform:translateY(0); } }
+@keyframes popIn    { from { transform:scale(0.4); opacity:0; } to { transform:scale(1); opacity:1; } }
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+@media (max-width: 640px) {
+  #page-left, #page-right { padding: 28px 20px 24px 24px; }
+  .book-course-title { font-size: 22px; }
+  .fee-amt { font-size: 22px; }
+  #book::before, #book::after { left: -8px; right: -8px; }
+  .leather-left { left: -8px; } .leather-right { right: -8px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ LANDING ═══════════ -->
+<div id="landing">
+  <div class="landing-title"><em>KALIYUG' INSPIRATION</em></div>
+  <div class="landing-sub"> Coaching for ambitious students of 2026–27</div>
+  <div class="courses-row" id="coursesRow">
+    <div class="c-card" onclick="openBook('11th')">
+      <div class="c-emoji">📘</div>
+      <div class="c-name">Class XI</div>
+      <div class="c-desc">Science & commerce foundation</div>
+      <div class="c-fee">₹50,000 <span>/ yr</span></div>
+      <div class="c-arrow">→</div>
+    </div>
+    <div class="c-card" onclick="openBook('12th')">
+      <div class="c-emoji">📕</div>
+      <div class="c-name">Class XII</div>
+      <div class="c-desc">Board excellence & entrance prep</div>
+      <div class="c-fee">₹60,000 <span>/ yr</span></div>
+      <div class="c-arrow">→</div>
+    </div>
+    <div class="c-card" onclick="openBook('jee')">
+      <div class="c-emoji">⚙️</div>
+      <div class="c-name">JEE Mains</div>
+      <div class="c-desc">IITs, NITs & top engineering</div>
+      <div class="c-fee">₹70,000 <span>/ yr</span></div>
+      <div class="c-arrow">→</div>
+    </div>
+    <div class="c-card" onclick="openBook('neet')">
+      <div class="c-emoji">🩺</div>
+      <div class="c-name">NEET</div>
+      <div class="c-desc">MBBS, BDS & medical sciences</div>
+      <div class="c-fee">₹65,000 <span>/ yr</span></div>
+      <div class="c-arrow">→</div>
+    </div>
+    <div class="c-card" onclick="openBook('bsc')">
+      <div class="c-emoji">🏥</div>
+      <div class="c-name">BSc Nursing</div>
+      <div class="c-desc">Healthcare career pathway</div>
+      <div class="c-fee">₹50,000 <span>/ yr</span></div>
+      <div class="c-arrow">→</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ OVERLAY ═══════════ -->
+<div id="overlay">
+  <div id="book-wrap">
+    <div id="book">
+
+      <!-- LEATHER COVERS -->
+      <div class="leather-left"></div>
+      <div class="leather-right"></div>
+
+      <!-- LEFT PAGE -->
+      <div class="book-page" id="page-left">
+        <!-- filled by JS -->
+        <div class="pg-num left">1</div>
+      </div>
+
+      <!-- SPINE -->
+      <div id="book-spine"></div>
+
+      <!-- RIGHT PAGE -->
+      <div class="book-page" id="page-right">
+        <!-- filled by JS -->
+        <div class="pg-num right">2</div>
+      </div>
+
+      <!-- FLIP PAGE (the turning leaf) -->
+      <div id="flip-page">
+        <div class="flip-front" id="flip-front-inner"></div>
+        <div class="flip-back"></div>
+      </div>
+
+    </div><!-- /#book -->
+  </div><!-- /#book-wrap -->
+  <button id="btn-close" onclick="closeBook()">✕</button>
+</div>
+
+<!-- ═══════════ SUCCESS ═══════════ -->
+<div id="success">
+  <div class="succ-icon">✓</div>
+  <div class="succ-title">Enrolled!</div>
+  <div class="succ-sub">We'll reach out to you shortly.</div>
+  <button class="btn-home" onclick="goHome()">← Back to Courses</button>
+</div>
+
+<script>
+/* ─────────────── DATA ─────────────── */
+const COURSES = {
+  '11th': { name:'Class XI', emoji:'📘', tag:'Foundation Batch', price:'₹50,000',
+    desc:'A comprehensive programme building rock-solid conceptual foundation across Physics, Chemistry, Mathematics & Biology for Class 11 students.',
+    inc:['NCERT-aligned curriculum with exam strategy','Weekly mock tests & doubt-clearing sessions','Study material + digital resources','Expert faculty with 10+ years experience','Small batch sizes (max 30 students)'],
+    sched:'Mon–Sat, 7 AM–9 AM or 5 PM–7 PM (student choice)',
+    elig:'Students who have passed Class 10 from any recognized board',
+    dur:'1 Academic Year (Apr–Mar)' },
+  '12th': { name:'Class XII', emoji:'📕', tag:'Board Excellence Batch', price:'₹60,000',
+    desc:'Intensive board preparation + entrance foundation targeting 90%+ in boards with simultaneous competitive exam readiness.',
+    inc:['Full syllabus with past paper analysis','Board + entrance dual preparation','Monthly parent–teacher meetings','Performance tracking & analytics','Revision bootcamp before boards'],
+    sched:'Mon–Sat, 6 AM–8 AM or 6 PM–8 PM (student choice)',
+    elig:'Students in Class 12 or Class 11 pass-outs',
+    dur:'1 Academic Year (Apr–Mar)' },
+  'jee': { name:'JEE Mains', emoji:'⚙️', tag:'Engineering Entrance Elite', price:'₹70,000',
+    desc:'High-intensity preparation covering Physics, Chemistry & Mathematics with full NTA pattern mock tests, speed-solving techniques and time management.',
+    inc:['1500+ hours of focused classroom teaching','200+ full-length JEE mock tests','Personalised rank improvement strategy','Chapter-wise DPPs (Daily Practice Problems)','Crash course before each attempt'],
+    sched:'Mon–Sun, 5 AM–8 AM + Evening 5 PM–8 PM',
+    elig:'Class 11/12 students or droppers targeting JEE 2025–26',
+    dur:'1 Year Intensive / 2 Year Foundation' },
+  'neet': { name:'NEET', emoji:'🩺', tag:'Medical Entrance Premier', price:'₹65,000',
+    desc:'Comprehensive NEET-UG preparation across Physics, Chemistry & Biology (Botany + Zoology) with NMC-aligned curriculum and 720-score targeting strategy.',
+    inc:['Chapter-by-chapter NCERT deep-dive','150+ NEET full mock tests (NTA pattern)','Botany & Zoology special sessions','NEET PYQ 2015–2024 complete coverage','Biology diagrams & assertion-reason mastery'],
+    sched:'Mon–Sat, 6 AM–9 AM + Evening 4 PM–7 PM',
+    elig:'Class 11/12 students or droppers aiming for MBBS/BDS',
+    dur:'1 Year Intensive / 2 Year Foundation' },
+  'bsc': { name:'BSc Nursing', emoji:'🏥', tag:'Healthcare Career Pathway', price:'₹50,000',
+    desc:'Specialised entrance preparation for BSc Nursing at top government & private institutes, covering GNM and B.Sc. Nursing entrance examinations.',
+    inc:['Complete anatomy, physiology & nutrition prep','Entrance pattern-based mock tests','GK & English aptitude coverage','Career counselling for nursing colleges','Interview prep & college selection guidance'],
+    sched:'Mon–Sat, 8 AM–11 AM or 4 PM–7 PM (student choice)',
+    elig:'Class 12 (PCB) pass-outs or appearing students',
+    dur:'1 Academic Year (Apr–Mar)' },
+};
+
+/* ─────────────── STATE ─────────────── */
+let currentKey = null;
+let phase = 0; // 0=info, 1=form
+
+/* ─────────────── HELPERS ─────────────── */
+function qs(s){ return document.querySelector(s); }
+
+/* ─────────────── PAGE 1 CONTENT ─────────────── */
+function renderPage1(c){
+  qs('#page-left').innerHTML = `
+    <div class="course-tag">${c.tag}</div>
+    <div class="book-course-title">${c.emoji} ${c.name}</div>
+    <div class="fee-box">
+      <span class="fee-label">Course Fee</span>
+      <span class="fee-amt">${c.price}</span>
+      <span class="fee-yr">/ year</span>
+    </div>
+    <div class="info-divider"></div>
+    <div class="info-body">
+      <div class="i-section"><h4>About</h4><p>${c.desc}</p></div>
+      <div class="i-section"><h4>What's Included</h4><ul>${c.inc.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+      <div class="i-section"><h4>Schedule</h4><p>${c.sched}</p></div>
+      <div class="i-section"><h4>Eligibility</h4><p>${c.elig}</p></div>
+      <div class="i-section"><h4>Duration</h4><p>${c.dur}</p></div>
+    </div>
+    <div class="agree-row">
+      <label class="agree-check-label">
+        <input type="checkbox" id="agreeBox" onchange="onAgree(this)">
+        I have read all the information above
+      </label>
+      <button class="btn-proceed" id="btnProceed" onclick="triggerFlip()">
+        Proceed to Register →
+      </button>
+    </div>
+    <div class="pg-num left">1</div>`;
+
+  qs('#page-right').innerHTML = `
+    <div class="right-deco">
+      <div class="right-star">✦</div>
+      <div class="right-deco-text">Agree to the terms<br>on the left to continue</div>
+    </div>
+    <div class="pg-num right">2</div>`;
+}
+
+/* ─────────────── PAGE 2 CONTENT ─────────────── */
+function renderPage2(c){
+  qs('#page-left').innerHTML = `
+    <div class="form-head">
+      <div class="form-head-title">Student<br><em>Registration</em></div>
+      <div class="form-head-sub">Fill in your details carefully</div>
+    </div>
+    <div class="course-pill">📖 ${c.name} — ${c.price}</div>
+    <div class="form-fields" id="formFields">
+      <div class="f-row">
+        <div class="f-group"><label>Student Name</label><input type="text" id="f_sname" placeholder="Full name" required></div>
+        <div class="f-group"><label>Father's Name</label><input type="text" id="f_fname" placeholder="Father's full name" required></div>
+      </div>
+      <div class="f-row">
+        <div class="f-group"><label>Date of Birth</label><input type="date" id="f_dob" required></div>
+        <div class="f-group"><label>10th Percentage</label><input type="number" id="f_pct" placeholder="e.g. 87.5" min="0" max="100" step="0.01" required></div>
+      </div>
+      <div class="f-group"><label>Gmail ID</label><input type="email" id="f_email" placeholder="you@gmail.com" required></div>
+      <div class="f-group"><label>Phone Number</label><input type="tel" id="f_phone" placeholder="+91 XXXXX XXXXX" required></div>
+    </div>
+    <div class="pg-num left">3</div>`;
+
+  qs('#page-right').innerHTML = `
+    <div class="submit-side">
+      <div class="submit-deco">Almost<br><em>There!</em></div>
+      <div class="submit-sub">Please confirm that all your details on the left are filled in correctly before submitting.</div>
+      <label class="confirm-label">
+        <input type="checkbox" id="confirmBox" onchange="onConfirm(this)">
+        I have carefully filled all information and it is accurate
+      </label>
+      <button class="btn-submit" id="btnSubmit" onclick="doSubmit()">
+        ✦ Complete Registration
+      </button>
+    </div>
+    <div class="pg-num right">4</div>`;
+}
+
+/* ─────────────── AGREE TOGGLE ─────────────── */
+function onAgree(cb){
+  const btn = qs('#btnProceed');
+  if(btn) { cb.checked ? btn.classList.add('on') : btn.classList.remove('on'); }
+}
+function onConfirm(cb){
+  const btn = qs('#btnSubmit');
+  if(btn) { cb.checked ? btn.classList.add('on') : btn.classList.remove('on'); }
+}
+
+/* ─────────────── OPEN BOOK ─────────────── */
+function openBook(key){
+  currentKey = key;
+  phase = 0;
+  const c = COURSES[key];
+
+  // Render page 1
+  renderPage1(c);
+
+  // Hide flip page
+  const fp = qs('#flip-page');
+  fp.style.display = 'none';
+  fp.classList.remove('flipping');
+
+  // Show overlay
+  qs('#overlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
+
+  // Trigger book enter animation
+  const book = qs('#book');
+  book.classList.remove('book-enter','book-crumble');
+  void book.offsetWidth; // reflow
+  book.classList.add('book-enter');
+}
+
+/* ─────────────── FLIP TRIGGER ─────────────── */
+function triggerFlip(){
+  if(phase !== 0) return;
+
+  const c = COURSES[currentKey];
+
+  // 1. Snapshot the right page content INTO the flip-front face
+  const rightHTML = qs('#page-right').innerHTML;
+  qs('#flip-front-inner').innerHTML = rightHTML;
+
+  // 2. Show and animate the flip page
+  const fp = qs('#flip-page');
+  fp.style.display = 'block';
+  fp.classList.remove('flipping');
+  void fp.offsetWidth;
+  fp.classList.add('flipping');
+
+  // 3. After flip halfway (~550ms), swap content on BOTH pages
+  setTimeout(() => {
+    renderPage2(c);
+    phase = 1;
+  }, 550);
+
+  // 4. After flip fully done (~1100ms), hide the flip-page overlay
+  setTimeout(() => {
+    fp.style.display = 'none';
+    fp.classList.remove('flipping');
+  }, 1150);
+}
+
+/* ─────────────── SUBMIT ─────────────── */
+async function doSubmit(){
+  const c = COURSES[currentKey];
+
+  // Gather values
+  const sname = (qs('#f_sname')||{value:''}).value.trim();
+  const fname = (qs('#f_fname')||{value:''}).value.trim();
+  const dob   = (qs('#f_dob')||{value:''}).value;
+  const pct   = (qs('#f_pct')||{value:''}).value;
+  const email = (qs('#f_email')||{value:''}).value.trim();
+  const phone = (qs('#f_phone')||{value:''}).value.trim();
+
+  if(!sname||!fname||!dob||!pct||!email||!phone){
+    alert('Please fill in all fields before submitting.');
+    return;
+  }
+
+  // Disable button
+  const btn = qs('#btnSubmit');
+  if(btn){ btn.textContent='Submitting…'; btn.style.opacity='0.6'; btn.style.pointerEvents='none'; }
+
+  // Build form data
+  const fd = new FormData();
+  fd.append('course', c.name);
+  fd.append('fee', c.price);
+  fd.append('student_name', sname);
+  fd.append('father_name', fname);
+  fd.append('dob', dob);
+  fd.append('percentage_10th', pct);
+  fd.append('email', email);
+  fd.append('phone', phone);
+
+  try {
+    const res = await fetch('https://formspree.io/f/mdawqwpo', {
+      method: 'POST', body: fd, headers: { Accept: 'application/json' }
+    });
+
+    if(res.ok){
+      // Crumble animation then show success
+      const book = qs('#book');
+      book.classList.add('book-crumble');
+      setTimeout(() => {
+        qs('#overlay').classList.remove('show');
+        document.body.style.overflow = '';
+        qs('#success').classList.add('show');
+      }, 1100);
+    } else {
+      if(btn){ btn.textContent='Error — try again'; btn.style.opacity='1'; btn.style.pointerEvents='all'; }
+    }
+  } catch(e) {
+    if(btn){ btn.textContent='Network error — retry'; btn.style.opacity='1'; btn.style.pointerEvents='all'; }
+  }
+}
+
+/* ─────────────── CLOSE ─────────────── */
+function closeBook(){
+  qs('#overlay').classList.remove('show');
+  document.body.style.overflow = '';
+  phase = 0;
+}
+
+/* ─────────────── GO HOME ─────────────── */
+function goHome(){
+  qs('#success').classList.remove('show');
+  phase = 0;
+}
+
+/* ─────────────── CLOSE ON BG CLICK ─────────────── */
+qs('#overlay').addEventListener('click', function(e){
+  if(e.target === this) closeBook();
+});
+
+/* ─────────────── ESC KEY ─────────────── */
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeBook(); });
+</script>
+</body>
+</html>
