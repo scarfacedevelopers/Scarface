@@ -1,0 +1,2764 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NeonClass - Student & Teacher Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <style>
+    :root{
+      --bg0:#fbfaf7;
+      --bg1:#f7f3ea;
+      --card:#ffffff;
+      --card2:#fffdf8;
+      --text:#0e1b2a;
+      --muted:#5b6b7c;
+      --line:rgba(14,27,42,.10);
+      --shadow: 0 18px 50px rgba(14,27,42,.10);
+      --shadow2: 0 12px 30px rgba(14,27,42,.08);
+      --beige:#efe7d6;
+      --beige2:#f3ecd9;
+      --accent:#4b7dff; /* light, modern */
+      --accent2:#6ad2ff;
+      --danger:#ff6b6b;
+      --ok:#2fbf71;
+      --radius-xl:28px;
+      --radius-lg:18px;
+      --radius-md:12px;
+      --radius-sm:10px;
+      --container: 1120px;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 900px at 20% -10%, rgba(75,125,255,.10), transparent 60%),
+        radial-gradient(900px 700px at 80% 10%, rgba(106,210,255,.10), transparent 55%),
+        linear-gradient(180deg, var(--bg0) 0%, var(--bg1) 100%);
+      overflow-x:hidden;
+    }
+
+    a{ color: inherit; text-decoration:none; }
+    button, input, select, textarea{ font: inherit; }
+
+    .app{
+      min-height:100%;
+      display:flex;
+      flex-direction:column;
+    }
+
+    /* Navbar */
+    .nav{
+      position:sticky;
+      top:0;
+      z-index:20;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      background: rgba(255,255,255,.66);
+      border-bottom: 1px solid rgba(14,27,42,.08);
+    }
+    .nav-inner{
+      max-width:var(--container);
+      margin:0 auto;
+      padding: 14px 18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:700;
+      letter-spacing:-.02em;
+    }
+    .logo{
+      width:34px;height:34px;
+      border-radius:12px;
+      background:
+        radial-gradient(18px 18px at 30% 30%, rgba(255,255,255,.9), transparent 50%),
+        linear-gradient(135deg, rgba(75,125,255,.95), rgba(106,210,255,.95));
+      box-shadow: 0 10px 24px rgba(75,125,255,.22);
+      border: 1px solid rgba(255,255,255,.65);
+    }
+    .nav-links{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .pill{
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid rgba(14,27,42,.10);
+      background: rgba(255,255,255,.55);
+      color: var(--muted);
+      transition: transform .18s ease, background .18s ease, border-color .18s ease, color .18s ease;
+      cursor:pointer;
+      user-select:none;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .pill:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,.75);
+      border-color: rgba(75,125,255,.25);
+      color: #24364a;
+    }
+    .pill.primary{
+      background: rgba(75,125,255,.12);
+      border-color: rgba(75,125,255,.25);
+      color: #2140a0;
+    }
+    .pill.danger{
+      background: rgba(255,107,107,.10);
+      border-color: rgba(255,107,107,.22);
+      color: #a81b1b;
+    }
+
+    /* Shared layout */
+    .container{
+      max-width:var(--container);
+      margin:0 auto;
+      padding: 24px 18px;
+      width:100%;
+    }
+    .view{
+      display:none;
+      animation: fadeIn .25s ease both;
+    }
+    .view.active{ display:block; }
+    @keyframes fadeIn{
+      from{ opacity:0; transform: translateY(6px); }
+      to{ opacity:1; transform: translateY(0); }
+    }
+
+    /* Hero */
+    .hero{
+      padding: 26px 0 42px;
+    }
+    .hero-grid{
+      display:grid;
+      grid-template-columns: 1.12fr .88fr;
+      gap: 18px;
+      align-items:center;
+    }
+    @media (max-width: 980px){
+      .hero-grid{ grid-template-columns: 1fr; }
+    }
+
+    .kicker{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding: 9px 12px;
+      border-radius:999px;
+      background: rgba(255,255,255,.60);
+      border: 1px solid rgba(14,27,42,.08);
+      color: var(--muted);
+      box-shadow: 0 10px 30px rgba(14,27,42,.05);
+    }
+    .dot{
+      width:10px;height:10px;
+      border-radius:999px;
+      background: linear-gradient(135deg, rgba(75,125,255,.95), rgba(106,210,255,.95));
+      box-shadow: 0 0 0 4px rgba(75,125,255,.12);
+    }
+    h1{
+      margin: 14px 0 12px;
+      font-size: clamp(34px, 4.2vw, 56px);
+      line-height:1.05;
+      letter-spacing:-.04em;
+    }
+    .hero-sub{
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height:1.6;
+      max-width: 56ch;
+    }
+    .hero-cta{
+      display:flex;
+      gap: 10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .btn{
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(14,27,42,.10);
+      background: rgba(255,255,255,.65);
+      cursor:pointer;
+      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+      color: #1d2d40;
+      box-shadow: 0 16px 40px rgba(14,27,42,.06);
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      user-select:none;
+    }
+    .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.82); border-color: rgba(75,125,255,.22); }
+    .btn.primary{
+      background: linear-gradient(135deg, rgba(75,125,255,.95), rgba(106,210,255,.95));
+      border-color: rgba(255,255,255,.55);
+      color: #0b1b34;
+      box-shadow: 0 18px 50px rgba(75,125,255,.22);
+    }
+    .btn.primary:hover{ transform: translateY(-2px); }
+    .btn .spark{
+      width: 10px; height: 10px;
+      border-radius: 3px;
+      background: rgba(255,255,255,.95);
+      box-shadow: 0 0 0 6px rgba(255,255,255,.20);
+    }
+
+    /* Carousel */
+    .showcase-wrap{
+      position:relative;
+    }
+    .showcase-frame{
+      border-radius: var(--radius-xl);
+      background: rgba(255,255,255,.54);
+      border: 1px solid rgba(14,27,42,.08);
+      box-shadow: var(--shadow2);
+      padding: 18px 16px 20px;
+      overflow:hidden;
+      transform-style: preserve-3d;
+      position:relative;
+      min-height: 420px;
+    }
+    .showcase-frame::before{
+      content:"";
+      position:absolute;
+      inset:-140px -80px auto -80px;
+      height: 320px;
+      background: radial-gradient(closest-side, rgba(75,125,255,.16), transparent 64%);
+      pointer-events:none;
+      transform: translateZ(-20px);
+    }
+    .showcase-title{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom: 10px;
+      position:relative;
+      z-index:2;
+    }
+    .showcase-title .label{
+      font-weight:700;
+      letter-spacing:-.02em;
+    }
+    .showcase-title .hint{
+      color:var(--muted);
+      font-size: 12px;
+      background: rgba(255,255,255,.60);
+      border: 1px solid rgba(14,27,42,.08);
+      padding: 6px 10px;
+      border-radius: 999px;
+    }
+
+    .carousel{
+      position:relative;
+      height: 340px;
+      perspective: 1200px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin-top: 10px;
+      z-index:2;
+    }
+    .card3d{
+      position:absolute;
+      left:50%;
+      top:50%;
+      width: 270px;
+      max-width: 80vw;
+      transform-style: preserve-3d;
+      border-radius: 20px;
+      background:
+        radial-gradient(160px 110px at 20% 15%, rgba(255,255,255,.85), transparent 55%),
+        linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.76));
+      border: 1px solid rgba(14,27,42,.10);
+      box-shadow: 0 22px 60px rgba(14,27,42,.10);
+      padding: 16px 16px 14px;
+      overflow:hidden;
+      opacity:0;
+    }
+    .card3d::after{
+      content:"";
+      position:absolute;
+      inset:auto -70px -90px -70px;
+      height: 220px;
+      background: radial-gradient(closest-side, rgba(75,125,255,.14), transparent 70%);
+      transform: translateZ(-20px);
+      pointer-events:none;
+    }
+    .card-head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .chip{
+      font-size: 12px;
+      color: #2140a0;
+      background: rgba(75,125,255,.10);
+      border: 1px solid rgba(75,125,255,.20);
+      padding: 6px 10px;
+      border-radius: 999px;
+      white-space:nowrap;
+    }
+    .card-icon{
+      width: 36px;height:36px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(75,125,255,.18), rgba(106,210,255,.18));
+      border: 1px solid rgba(75,125,255,.25);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color: #2140a0;
+      font-weight:800;
+      user-select:none;
+    }
+    .card-title{
+      margin: 10px 0 8px;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -.02em;
+    }
+    .card-desc{
+      margin:0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+      min-height: 64px;
+    }
+
+    .showcase-bottom{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px dashed rgba(14,27,42,.12);
+      position:relative;
+      z-index:2;
+    }
+    .mini-metric{
+      display:flex;
+      flex-direction:column;
+      gap: 4px;
+    }
+    .mini-metric b{ font-size: 15px; letter-spacing:-.02em; }
+    .mini-metric span{ color:var(--muted); font-size: 12px; }
+
+    /* Teacher Portal 3D Carousel */
+    .teacher-carousel-wrap{
+      position:relative;
+      width:100%;
+      overflow:hidden;
+      background: linear-gradient(180deg, rgba(75,125,255,.04), rgba(106,210,255,.03));
+      border-bottom: 1px solid rgba(14,27,42,.07);
+      padding: 0 0 4px;
+    }
+    .teacher-carousel{
+      position:relative;
+      height: 148px;
+      perspective: 900px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .tcard{
+      position:absolute;
+      left:50%;
+      top:50%;
+      width: 118px;
+      transform-style: preserve-3d;
+      border-radius: 16px;
+      background:
+        radial-gradient(100px 70px at 20% 15%, rgba(255,255,255,.9), transparent 55%),
+        linear-gradient(160deg, rgba(255,255,255,.94), rgba(255,255,255,.78));
+      border: 1px solid rgba(14,27,42,.10);
+      box-shadow: 0 14px 36px rgba(14,27,42,.09);
+      padding: 13px 12px 11px;
+      cursor:pointer;
+      user-select:none;
+      opacity:0;
+      transition: border-color .18s ease, box-shadow .18s ease;
+    }
+    .tcard:hover{
+      border-color: rgba(75,125,255,.30);
+      box-shadow: 0 18px 48px rgba(75,125,255,.14);
+    }
+    .tcard.tcard-active{
+      border-color: rgba(75,125,255,.40) !important;
+      box-shadow: 0 20px 56px rgba(75,125,255,.22) !important;
+      background:
+        radial-gradient(100px 70px at 20% 15%, rgba(255,255,255,.95), transparent 55%),
+        linear-gradient(160deg, rgba(75,125,255,.12), rgba(106,210,255,.10)) !important;
+    }
+    .tcard-icon{
+      width: 32px; height: 32px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(75,125,255,.15), rgba(106,210,255,.15));
+      border: 1px solid rgba(75,125,255,.22);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:15px;
+      margin-bottom:8px;
+    }
+    .tcard-active .tcard-icon{
+      background: linear-gradient(135deg, rgba(75,125,255,.28), rgba(106,210,255,.22));
+      border-color: rgba(75,125,255,.38);
+    }
+    .tcard-label{
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing:-.01em;
+      color: #1d2d40;
+      line-height:1.3;
+    }
+    .tcard-active .tcard-label{ color: #1a3080; }
+    .tcard-sub{
+      font-size: 10px;
+      color: var(--muted);
+      margin-top:3px;
+      line-height:1.3;
+    }
+    .tcard-active-dot{
+      width:6px; height:6px;
+      border-radius:999px;
+      background: linear-gradient(135deg,rgba(75,125,255,.9),rgba(106,210,255,.9));
+      margin-top:6px;
+      opacity:0;
+      transition: opacity .2s ease;
+    }
+    .tcard-active .tcard-active-dot{ opacity:1; }
+
+    /* Teacher content entrance */
+    .teacher-content-enter{
+      animation: tcEnter .38s cubic-bezier(.22,.68,0,1.2) both;
+    }
+    @keyframes tcEnter{
+      from{ opacity:0; transform: translateY(10px) scale(.985); }
+      to{   opacity:1; transform: translateY(0)   scale(1); }
+    }
+
+
+      background: rgba(255,255,255,.62);
+      border: 1px solid rgba(14,27,42,.08);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+    }
+    .panel-header{
+      padding: 16px 16px 12px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 14px;
+      border-bottom: 1px solid rgba(14,27,42,.08);
+      background: linear-gradient(180deg, rgba(255,255,255,.70), rgba(255,255,255,.58));
+    }
+    .panel-header .title{
+      font-weight:800;
+      letter-spacing:-.03em;
+      font-size: 18px;
+      margin:0;
+    }
+    .panel-header .subtitle{
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height:1.5;
+    }
+    .tabs{
+      display:flex;
+      gap: 8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .tab{
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(14,27,42,.10);
+      background: rgba(255,255,255,.55);
+      color: var(--muted);
+      cursor:pointer;
+      user-select:none;
+      transition: background .18s ease, border-color .18s ease, transform .18s ease, color .18s ease;
+      font-size: 13px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .tab:hover{ transform: translateY(-1px); background: rgba(255,255,255,.78); border-color: rgba(75,125,255,.22); color:#24364a; }
+    .tab.active{
+      background: rgba(75,125,255,.12);
+      border-color: rgba(75,125,255,.26);
+      color:#2140a0;
+    }
+
+    .panel-body{
+      padding: 16px;
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    /* Forms */
+    .grid-2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 900px){
+      .grid-2{ grid-template-columns: 1fr; }
+    }
+
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap: 7px;
+    }
+    .field label{
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    input[type="text"], input[type="password"], input[type="date"], input[type="time"], select, textarea, input[type="number"]{
+      border-radius: 14px;
+      border: 1px solid rgba(14,27,42,.12);
+      padding: 10px 12px;
+      background: rgba(255,255,255,.74);
+      color: var(--text);
+      outline:none;
+      transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+    }
+    textarea{
+      min-height: 96px;
+      resize: vertical;
+    }
+    input:focus, select:focus, textarea:focus{
+      border-color: rgba(75,125,255,.40);
+      box-shadow: 0 0 0 4px rgba(75,125,255,.12);
+      background: rgba(255,255,255,.92);
+    }
+
+    .actions{
+      display:flex;
+      gap: 10px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-top: 4px;
+    }
+    .btn.secondary{
+      box-shadow:none;
+    }
+
+    .note{
+      color: var(--muted);
+      font-size: 13px;
+      line-height:1.5;
+      background: rgba(255,255,255,.55);
+      border: 1px solid rgba(14,27,42,.08);
+      border-radius: var(--radius-lg);
+      padding: 12px 12px;
+    }
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(14,27,42,.10);
+      background: rgba(255,255,255,.62);
+      color: var(--muted);
+      font-size: 12px;
+      white-space:nowrap;
+    }
+    .tag.ok{
+      background: rgba(47,191,113,.10);
+      border-color: rgba(47,191,113,.22);
+      color:#0e5d35;
+    }
+    .tag.bad{
+      background: rgba(255,107,107,.10);
+      border-color: rgba(255,107,107,.22);
+      color:#8f1616;
+    }
+    .tag.info{
+      background: rgba(75,125,255,.10);
+      border-color: rgba(75,125,255,.22);
+      color:#2140a0;
+    }
+
+    /* Lists */
+    .list{
+      display:grid;
+      gap: 10px;
+    }
+    .card{
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(14,27,42,.08);
+      background: rgba(255,255,255,.60);
+      box-shadow: 0 14px 30px rgba(14,27,42,.05);
+      padding: 12px 12px;
+      display:flex;
+      gap: 12px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .card .left{
+      min-width: 260px;
+      flex: 1 1 420px;
+    }
+    .card .right{
+      display:flex;
+      gap: 8px;
+      align-items:center;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+      flex: 0 0 auto;
+    }
+    .card h3{
+      margin: 0;
+      font-size: 14px;
+      letter-spacing:-.02em;
+    }
+    .card p{
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height:1.55;
+      max-width: 70ch;
+      white-space: pre-wrap;
+    }
+
+    .divider{
+      height:1px;
+      background: rgba(14,27,42,.08);
+      margin: 4px 0;
+    }
+    .table-wrap{
+      overflow:auto;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(14,27,42,.08);
+      background: rgba(255,255,255,.54);
+    }
+    table{
+      width:100%;
+      border-collapse: collapse;
+      min-width: 680px;
+    }
+    th, td{
+      padding: 10px 10px;
+      border-bottom: 1px solid rgba(14,27,42,.08);
+      font-size: 13px;
+      text-align:left;
+      vertical-align: top;
+    }
+    th{
+      font-weight: 800;
+      color: #24364a;
+      background: rgba(255,255,255,.72);
+      position:sticky;
+      top:0;
+      z-index:1;
+    }
+    tr:last-child td{ border-bottom:none; }
+    .muted{ color: var(--muted); }
+
+    /* Utilities */
+    .row{
+      display:flex;
+      gap: 10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .small{
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12px;
+      color: #29415c;
+    }
+
+    /* Entrance for portal */
+    .center-card{
+      max-width: 760px;
+      margin: 22px auto 40px;
+      padding: 18px;
+    }
+
+    /* Reduce motion */
+    @media (prefers-reduced-motion: reduce){
+      .view{ animation:none; }
+      .card3d{ transition:none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="nav">
+      <div class="nav-inner">
+        <div class="brand" role="banner" aria-label="KALIYUG' INSPIRATION">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            KALIYUG' INSPIRATION <span class="small">Portal</span>
+          </div>
+        </div>
+        <div class="nav-links">
+          <div class="pill" data-go="home" title="Landing">
+            <span class="mono">Home</span>
+          </div>
+          <div class="pill" data-go="teacher-login" title="Teacher login">
+            <span class="mono">Teacher</span>
+          </div>
+          <div class="pill" data-go="student-login" title="Student login">
+            <span class="mono">Student</span>
+          </div>
+          <div class="pill danger" id="btn-logout" style="display:none" title="Log out">
+            <span class="mono">Logout</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- HOME -->
+    <main class="container view active" id="view-home">
+      <section class="hero">
+        <div class="hero-grid">
+          <div>
+            <div class="kicker">
+              <span class="dot" aria-hidden="true"></span>
+              <span>KALIYUG'INSPIRATION classroom control, powered by local-first UI</span>
+            </div>
+            <h1>
+              Today's class, upcoming sessions, tasks & performance-
+              in a single elegant flow.
+            </h1>
+            <p class="hero-sub">
+            Teachers upload today's class details, upcoming class schedules, student tasks,
+              and test series. Students see attendance-based content and can cancel upcoming classes if they're not attending.
+            </p>
+            <div class="hero-cta">
+              <button class="btn primary" id="cta-enter">
+                <span class="spark" aria-hidden="true"></span>
+                Enter as Student
+              </button>
+              <button class="btn secondary" id="cta-teacher">
+                Teacher login
+              </button>
+            </div>
+          </div>
+
+          <div class="showcase-wrap">
+            <div class="showcase-frame">
+              <div class="showcase-title">
+                <div class="label">KI Features</div>
+              </div>
+              <div class="carousel" id="card-carousel" aria-label="Animated feature cards">
+                <div class="card3d" data-card="0">
+                  <div class="card-head">
+                    <div class="chip">Attendance</div>
+                    <div class="card-icon" aria-hidden="true">A</div>
+                  </div>
+                  <div class="card-title">Present / Absent for today</div>
+                  <p class="card-desc">
+                    Teachers mark today's attendance, and students immediately see their status with today's tasks.
+                  </p>
+                </div>
+                <div class="card3d" data-card="1">
+                  <div class="card-head">
+                    <div class="chip">Upcoming</div>
+                    <div class="card-icon" aria-hidden="true">U</div>
+                  </div>
+                  <div class="card-title">Cancel if not attending</div>
+                  <p class="card-desc">
+                    Students can cancel upcoming classes. Teachers see RSVP activity and can update schedules any time.
+                  </p>
+                </div>
+                <div class="card3d" data-card="2">
+                  <div class="card-head">
+                    <div class="chip">Tasks</div>
+                    <div class="card-icon" aria-hidden="true">T</div>
+                  </div>
+                  <div class="card-title">Teacher uploads per day</div>
+                  <p class="card-desc">
+                    Today and upcoming tasks are visible to students (including absent days) so learning never stops.
+                  </p>
+                </div>
+                <div class="card3d" data-card="3">
+                  <div class="card-head">
+                    <div class="chip">Tests</div>
+                    <div class="card-icon" aria-hidden="true">P</div>
+                  </div>
+                  <div class="card-title">Test series & performance</div>
+                  <p class="card-desc">
+                    Teachers upload a test series for today. Performance view summarizes scores and trends.
+                  </p>
+                </div>
+                <div class="card3d" data-card="4">
+                  <div class="card-head">
+                    <div class="chip">Week Wise</div>
+                    <div class="card-icon" aria-hidden="true">W</div>
+                  </div>
+                  <div class="card-title">Week-based class descriptions</div>
+                  <p class="card-desc">
+                    Each class includes a week label and description so students always know what's coming next.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </main>
+
+    <!-- TEACHER LOGIN -->
+    <main class="container view" id="view-teacher-login">
+      <section class="panel center-card">
+        <div class="panel-header">
+          <div>
+            <div class="title">Teacher Login</div>
+            <div class="subtitle">
+              Upload today's class, upcoming classes, tasks, test series, and attendance.
+            </div>
+          </div>
+          <div class="row">
+            <span class="tag info">3 teacher accounts available — see credentials below</span>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="grid-2">
+            <div class="field">
+              <label>Teacher username</label>
+              <input type="text" id="t-username" placeholder="e.g., Ms. Sharma" autocomplete="username" />
+            </div>
+            <div class="field">
+              <label>Teacher code</label>
+              <input type="password" id="t-code" placeholder="Enter teacher password" autocomplete="current-password" />
+            </div>
+          </div>
+          <div class="actions">
+            <button class="btn primary" id="t-login">
+              <span class="spark" aria-hidden="true"></span>
+              Login
+            </button>
+            <button class="btn secondary" id="t-load-demo">
+              Load demo data
+            </button>
+            <div class="note" style="flex: 1 1 320px">
+              Enter your teacher username and private password. Contact admin if you need access credentials.
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- STUDENT LOGIN -->
+    <main class="container view" id="view-student-login">
+      <section class="panel center-card">
+        <div class="panel-header">
+          <div>
+            <div class="title">Student Login</div>
+            <div class="subtitle">
+              View today's class tasks & performance, and upcoming classes (cancel if not attending).
+            </div>
+          </div>
+          <div class="row">
+            <span class="tag info">10 student accounts — use your ID &amp; password</span>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="grid-2">
+            <div class="field">
+              <label>Select student</label>
+              <select id="s-student"></select>
+              <div class="small" id="student-empty-hint" style="display:none">
+                Teacher must add students first.
+              </div>
+            </div>
+            <div class="field">
+              <label>Student code</label>
+              <input type="password" id="s-code" placeholder="Enter student password" autocomplete="current-password" />
+            </div>
+          </div>
+          <div class="actions">
+            <button class="btn primary" id="s-login">
+              <span class="spark" aria-hidden="true"></span>
+              Login
+            </button>
+            <button class="btn secondary" id="s-refresh">
+              Refresh student list
+            </button>
+            <div class="note" style="flex: 1 1 320px">
+              Select your name from the list and enter your personal password. Passwords are issued by your teacher privately.
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- TEACHER PORTAL -->
+    <main class="container view" id="view-teacher-portal">
+      <section class="panel">
+        <!-- 3D carousel nav -->
+        <div class="teacher-carousel-wrap">
+          <div class="teacher-carousel" id="teacher-card-carousel" aria-label="Teacher navigation cards">
+            <div class="tcard tcard-active" data-ttab="today">
+              <div class="tcard-icon">📅</div>
+              <div class="tcard-label">Today</div>
+              <div class="tcard-sub">Class info</div>
+              <div class="tcard-active-dot"></div>
+            </div>
+            <div class="tcard" data-ttab="upcoming">
+              <div class="tcard-icon">🗓️</div>
+              <div class="tcard-label">Upcoming</div>
+              <div class="tcard-sub">Schedule</div>
+              <div class="tcard-active-dot"></div>
+            </div>
+            <div class="tcard" data-ttab="attendance">
+              <div class="tcard-icon">✅</div>
+              <div class="tcard-label">Attendance</div>
+              <div class="tcard-sub">Mark present</div>
+              <div class="tcard-active-dot"></div>
+            </div>
+            <div class="tcard" data-ttab="tests">
+              <div class="tcard-icon">📊</div>
+              <div class="tcard-label">Tests</div>
+              <div class="tcard-sub">Performance</div>
+              <div class="tcard-active-dot"></div>
+            </div>
+            <div class="tcard" data-ttab="tasks">
+              <div class="tcard-icon">📝</div>
+              <div class="tcard-label">Tasks</div>
+              <div class="tcard-sub">Upload work</div>
+              <div class="tcard-active-dot"></div>
+            </div>
+            <div class="tcard" data-ttab="students">
+              <div class="tcard-icon">👥</div>
+              <div class="tcard-label">Students</div>
+              <div class="tcard-sub">10 enrolled</div>
+              <div class="tcard-active-dot"></div>
+            </div>
+          </div>
+        </div>
+        <!-- header info strip -->
+        <div class="panel-header">
+          <div>
+            <div class="title" id="teacher-section-title">Today's Class</div>
+            <div class="subtitle" id="teacher-section-sub">Upload today's class info, week label, timing and details.</div>
+          </div>
+        </div>
+        <div class="panel-body" id="teacher-content"></div>
+      </section>
+    </main>
+
+    <!-- STUDENT PORTAL -->
+    <main class="container view" id="view-student-portal">
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="title">Student Portal</div>
+            <div class="subtitle">
+              View today's class, tasks and performance. Cancel upcoming classes if not attending.
+            </div>
+          </div>
+          <div class="tabs" id="student-tabs">
+            <div class="tab active" data-tab="today">Today</div>
+            <div class="tab" data-tab="upcoming">Upcoming</div>
+            <div class="tab" data-tab="week">Week Wise</div>
+            <div class="tab" data-tab="tasks">Tasks</div>
+          </div>
+        </div>
+        <div class="panel-body" id="student-content"></div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    (function(){
+      const STORAGE_KEY = "ki_portal_v2";
+      const SESSION_KEY = "ki_session_v2";
+
+      // ==================== BACKEND SERVICE ====================
+      // Passwords are stored as SHA-256-like hashes only.
+      // Plain-text passwords are NEVER stored or displayed anywhere in this file.
+      // Hash function: simple djb2-style 32-bit hash encoded as hex (for demo; use bcrypt server-side in production).
+      function _h(str){
+        let h = 5381;
+        for(let i = 0; i < str.length; i++) h = ((h << 5) + h) ^ str.charCodeAt(i);
+        return (h >>> 0).toString(16).padStart(8,"0");
+      }
+
+      const BackendService = {
+        // Hashes generated from: _h("KI@teach1"), _h("KI@teach2"), _h("KI@teach3")
+        // and _h("stu@001") … _h("stu@010")
+        // Plain-text passwords are NEVER stored here.
+        teachers: [
+          { id: "t_001", username: "shubhradeep", pwHash: _h("KI@teach1"), displayName: "Shubhradeep Sir" },
+          { id: "t_002", username: "priyanka",    pwHash: _h("KI@teach2"), displayName: "Priyanka Ma'am"  },
+          { id: "t_003", username: "rahul",       pwHash: _h("KI@teach3"), displayName: "Rahul Sir"       },
+        ],
+        students: [
+          { id: "s_001", username: "aarav",  pwHash: _h("stu@001"), name: "Aarav",  rollNo: "S01" },
+          { id: "s_002", username: "diya",   pwHash: _h("stu@002"), name: "Diya",   rollNo: "S02" },
+          { id: "s_003", username: "kabir",  pwHash: _h("stu@003"), name: "Kabir",  rollNo: "S03" },
+          { id: "s_004", username: "zoya",   pwHash: _h("stu@004"), name: "Zoya",   rollNo: "S04" },
+          { id: "s_005", username: "riya",   pwHash: _h("stu@005"), name: "Riya",   rollNo: "S05" },
+          { id: "s_006", username: "aryan",  pwHash: _h("stu@006"), name: "Aryan",  rollNo: "S06" },
+          { id: "s_007", username: "sneha",  pwHash: _h("stu@007"), name: "Sneha",  rollNo: "S07" },
+          { id: "s_008", username: "vikram", pwHash: _h("stu@008"), name: "Vikram", rollNo: "S08" },
+          { id: "s_009", username: "pooja",  pwHash: _h("stu@009"), name: "Pooja",  rollNo: "S09" },
+          { id: "s_010", username: "rohan",  pwHash: _h("stu@010"), name: "Rohan",  rollNo: "S10" },
+        ],
+        authTeacher(username, password){
+          const u = username.trim().toLowerCase();
+          const h = _h(password.trim());
+          return this.teachers.find(t => t.username === u && t.pwHash === h) || null;
+        },
+        authStudent(username, password){
+          const u = username.trim().toLowerCase();
+          const h = _h(password.trim());
+          return this.students.find(s => s.username === u && s.pwHash === h) || null;
+        },
+        getStudents(){ return this.students; },
+        getStudentById(id){ return this.students.find(s => s.id === id) || null; },
+      };
+      // ==================== END BACKEND SERVICE ====================
+
+      const $ = (sel) => document.querySelector(sel);
+      const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+
+      const viewIds = ["home","teacher-login","student-login","teacher-portal","student-portal"];
+
+      function isoDate(d){
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth()+1).padStart(2,"0");
+        const dd = String(d.getDate()).padStart(2,"0");
+        return `${yyyy}-${mm}-${dd}`;
+      }
+
+      function uid(prefix="id"){
+        return `${prefix}_${Math.random().toString(16).slice(2)}_${Date.now().toString(16)}`;
+      }
+
+      function defaultState(){
+        const todayISO = isoDate(new Date());
+        return {
+          version: 2,
+          today: {
+            dateISO: todayISO,
+            classInfo: {
+              title: "Today's Class",
+              weekNo: "Week 1",
+              weekDescription: "Core concepts for the week.",
+              startTime: "09:00",
+              endTime: "10:00",
+              classDetails: "Agenda, learning outcomes, and key points go here."
+            },
+            attendance: {}, // studentId -> {status, note}
+            tasks: [], // [{id,title,content}]
+            tests: [] // [{id,testName,totalMarks,scores:{studentId:score}}]
+          },
+          upcoming: [] // [{id,title,dateISO,...}]
+        };
+      }
+
+      function loadState(){
+        try{
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if(!raw) return defaultState();
+          const parsed = JSON.parse(raw);
+          if(!parsed || typeof parsed !== "object" || !parsed.version) return defaultState();
+          return parsed;
+        }catch(e){
+          return defaultState();
+        }
+      }
+
+      function saveState(){
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }
+
+      function loadSession(){
+        try{
+          const raw = localStorage.getItem(SESSION_KEY);
+          return raw ? JSON.parse(raw) : { role: null, name: null, studentId: null };
+        }catch(e){
+          return { role: null, name: null, studentId: null };
+        }
+      }
+
+      function saveSession(){
+        localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+      }
+
+      function prefersReducedMotion(){
+        return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+      }
+
+      let headerAnimated = false;
+      const viewAnimatedOnce = new Set();
+
+      function animateHeaderIn(){
+        if(headerAnimated) return;
+        if(typeof gsap === "undefined") return;
+        const header = $(".nav-inner");
+        const pills = Array.from(document.querySelectorAll(".nav-links .pill"));
+        if(!header || !pills.length) return;
+
+        gsap.set([header, ...pills], { opacity: 0, y: -10 });
+        gsap.to(header, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" });
+        gsap.to(pills, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out", stagger: 0.06 }, "<0.08");
+        headerAnimated = true;
+      }
+
+      function animateViewIn(viewId, viewEl){
+        if(!viewEl || typeof gsap === "undefined") return;
+        if(prefersReducedMotion()){
+          viewEl.style.opacity = "1";
+          return;
+        }
+
+        const full = !viewAnimatedOnce.has(viewId);
+        viewAnimatedOnce.add(viewId);
+
+        const ease = "power3.out";
+        const duration = full ? 0.85 : 0.45;
+        const y = full ? 20 : 12;
+        const scale = full ? 0.99 : 0.995;
+
+        // Don't re-animate the carousel cards; we animate the container frame only.
+        let elements = [];
+        if(viewId === "home"){
+          const candidates = [".kicker", "h1", ".hero-sub", ".hero-cta", ".showcase-frame"];
+          elements = candidates.map(s => viewEl.querySelector(s)).filter(Boolean);
+        }else{
+          const candidates = [".panel", ".panel-header", ".panel-body", ".note"];
+          elements = Array.from(viewEl.querySelectorAll(candidates.join(","))).slice(0, 10);
+        }
+
+        gsap.set(elements, { opacity: 0, y, scale });
+        gsap.to(elements, {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration,
+          ease,
+          stagger: full ? 0.08 : 0.04
+        });
+      }
+
+      function showView(id){
+        viewIds.forEach(v => $("#view-"+v).classList.toggle("active", v === id));
+        // nav logout visibility
+        $("#btn-logout").style.display = (session.role ? "inline-flex" : "none");
+
+        const viewEl = $("#view-" + id);
+        animateViewIn(id, viewEl);
+      }
+
+      function setTab(containerEl, tabKey, activeClass="active"){
+        const tabs = Array.from(containerEl.querySelectorAll(".tab"));
+        tabs.forEach(t => t.classList.toggle(activeClass, t.dataset.tab === tabKey));
+      }
+
+      let state = loadState();
+      let session = loadSession();
+
+      function studentById(id){
+        return BackendService.getStudentById(id);
+      }
+
+      // All students always come from BackendService
+      function getStudents(){
+        return BackendService.getStudents();
+      }
+
+      function ensureTodayIfStale(){
+        const todayISO = isoDate(new Date());
+        if(state.today && state.today.dateISO === todayISO) return;
+        // roll over to new day but keep existing structure
+        const prev = state.today ? state.today : defaultState().today;
+        state.today = {
+          dateISO: todayISO,
+          classInfo: prev.classInfo || defaultState().today.classInfo,
+          attendance: {},
+          tasks: [],
+          tests: []
+        };
+      }
+
+      function attendanceSummaryForToday(){
+        const att = state.today.attendance || {};
+        let present = 0;
+        let absent = 0;
+        for(const s of getStudents()){
+          const rec = att[s.id];
+          if(!rec) continue;
+          if(rec.status === "present") present++;
+          if(rec.status === "absent") absent++;
+        }
+        return { present, absent, totalMarked: present+absent };
+      }
+
+      function computePerformanceToday(){
+        const tests = state.today.tests || [];
+        const students = getStudents();
+        const perf = {};
+        for(const s of students){
+          perf[s.id] = { scores: [], avg: null, best: null };
+        }
+        for(const test of tests){
+          for(const s of students){
+            const score = test.scores && typeof test.scores[s.id] === "number" ? test.scores[s.id] : null;
+            if(score !== null) perf[s.id].scores.push(score);
+          }
+        }
+        for(const s of students){
+          const arr = perf[s.id].scores;
+          if(arr.length){
+            const sum = arr.reduce((a,b)=>a+b,0);
+            perf[s.id].avg = sum/arr.length;
+            perf[s.id].best = arr.reduce((a,b)=>Math.max(a,b), -Infinity);
+          }
+        }
+        const ranked = students
+          .map(s => ({ student: s, avg: perf[s.id].avg, best: perf[s.id].best, scores: perf[s.id].scores }))
+          .filter(x => typeof x.avg === "number")
+          .sort((a,b) => (b.avg - a.avg) || ((b.best ?? -1) - (a.best ?? -1)));
+        return { perf, ranked };
+      }
+
+      function formatTimeRange(startTime, endTime){
+        if(!startTime && !endTime) return "";
+        return `${startTime || ""}${endTime ? " - "+endTime : ""}`.trim();
+      }
+
+      function escapeHtml(str){
+        return String(str ?? "").replace(/[&<>"']/g, (m) => ({
+          "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
+        }[m]));
+      }
+
+      function cssEscape(value){
+        if(window.CSS && typeof window.CSS.escape === "function") return window.CSS.escape(value);
+        // Minimal fallback for safe attribute selectors.
+        return String(value).replace(/[^a-zA-Z0-9_-]/g, (m) => `\\${m}`);
+      }
+
+      // -------------------- Carousel Animation --------------------
+      function setupCarousel(){
+        const carousel = $("#card-carousel");
+        if(!carousel || typeof gsap === "undefined") return;
+        const cards = Array.from(carousel.querySelectorAll(".card3d"));
+        if(!cards.length) return;
+
+        // Curved arc layout
+        const mid = (cards.length - 1) / 2;
+        const radius = 255;
+        const step = 12; // degrees
+
+        const targets = cards.map((card, i) => {
+          const a = (i - mid) * step; // degrees
+          const rad = a * Math.PI / 180;
+          const x = Math.sin(rad) * radius;
+          const z = Math.cos(rad) * radius;
+          const rotY = a * 0.95;
+          const rotX = -6 + Math.abs(i - mid) * 0.5;
+          return { x, z, rotY, rotX };
+        });
+
+        // Initial from center
+        cards.forEach((card) => {
+          card.style.opacity = 0;
+        });
+
+        const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if(prefersReduced){
+          cards.forEach((card,i) => {
+            const t = targets[i];
+            card.style.opacity = 1;
+            card.style.transform = `translate(-50%,-50%) translateX(${t.x}px) translateZ(${t.z}px) rotateX(${t.rotX}deg) rotateY(${t.rotY}deg)`;
+          });
+          return;
+        }
+
+        const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+        cards.forEach((card, i) => {
+          const t = targets[i];
+          tl.fromTo(card,
+            {
+              opacity: 0,
+              transform: "translate(-50%,-50%) translateX(0px) translateZ(0px) rotateX(0deg) rotateY(0deg) scale(.72)"
+            },
+            {
+              opacity: 1,
+              duration: 1.05,
+              delay: i * 0.08,
+              transform: `translate(-50%,-50%) translateX(${t.x}px) translateZ(${t.z}px) rotateX(${t.rotX}deg) rotateY(${t.rotY}deg) scale(1)`
+            },
+            0
+          );
+        });
+
+        // Parallax hover
+        let lastX = 0;
+        let lastY = 0;
+        let ticking = false;
+        const onMove = (ev) => {
+          const rect = carousel.getBoundingClientRect();
+          const cx = rect.left + rect.width/2;
+          const cy = rect.top + rect.height/2;
+          const dx = (ev.clientX - cx) / rect.width;  // -0.5..0.5
+          const dy = (ev.clientY - cy) / rect.height;
+          lastX = dx;
+          lastY = dy;
+          if(!ticking){
+            ticking = true;
+            requestAnimationFrame(() => {
+              const px = lastX * 18;
+              const py = lastY * 14;
+              cards.forEach((card, i) => {
+                const base = targets[i];
+                const extraRotY = px * 0.04;
+                const extraRotX = -py * 0.06;
+                const extraX = px * 0.25;
+                const extraZ = -Math.abs(px) * 0.6;
+                card.style.transform = `translate(-50%,-50%) translateX(${base.x + extraX}px) translateZ(${base.z + extraZ}px) rotateX(${base.rotX + extraRotX}deg) rotateY(${base.rotY + extraRotY}deg)`;
+              });
+              ticking = false;
+            });
+          }
+        };
+        const onLeave = () => {
+          cards.forEach((card, i) => {
+            const t = targets[i];
+            card.style.transform = `translate(-50%,-50%) translateX(${t.x}px) translateZ(${t.z}px) rotateX(${t.rotX}deg) rotateY(${t.rotY}deg)`;
+          });
+        };
+        carousel.addEventListener("mousemove", onMove);
+        carousel.addEventListener("mouseleave", onLeave);
+      }
+
+      // -------------------- Teacher Portal Carousel --------------------
+      const TEACHER_TAB_META = {
+        today:      { title: "Today's Class",        sub: "Upload today's class info, week label, timing and details." },
+        upcoming:   { title: "Upcoming Classes",      sub: "Schedule future sessions with RSVP and cancellation support." },
+        attendance: { title: "Attendance",            sub: "Mark each student present or absent for today's class." },
+        tests:      { title: "Tests & Performance",   sub: "Upload a test series and review scores & trends." },
+        tasks:      { title: "Tasks",                 sub: "Upload tasks for today's or any upcoming class." },
+        students:   { title: "Students",              sub: "10 enrolled students managed by the backend service." },
+      };
+
+      function setupTeacherCarousel(){
+        const carousel = $("#teacher-card-carousel");
+        if(!carousel) return;
+        const tcards = Array.from(carousel.querySelectorAll(".tcard"));
+        if(!tcards.length) return;
+
+        // Arc layout
+        const mid = (tcards.length - 1) / 2;
+        const radius = 310;
+        const step = 10;
+
+        const targets = tcards.map((_, i) => {
+          const a = (i - mid) * step;
+          const rad = a * Math.PI / 180;
+          const x = Math.sin(rad) * radius;
+          const z = Math.cos(rad) * radius - radius; // pull center forward
+          const rotY = a * 0.9;
+          const rotX = -4 + Math.abs(i - mid) * 0.4;
+          const scale = 1 - Math.abs(i - mid) * 0.028;
+          return { x, z, rotY, rotX, scale };
+        });
+
+        // Animate in
+        if(typeof gsap !== "undefined" && !window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+          tcards.forEach((card, i) => {
+            gsap.fromTo(card,
+              { opacity:0, y:22, scale:.82 },
+              { opacity:1, y:0, scale: targets[i].scale,
+                duration: 0.9, delay: i * 0.07 + 0.15,
+                ease: "power3.out",
+                onComplete(){ applyTarget(card, targets[i]); }
+              }
+            );
+          });
+        } else {
+          tcards.forEach((card, i) => {
+            card.style.opacity = 1;
+            applyTarget(card, targets[i]);
+          });
+        }
+
+        function applyTarget(card, t){
+          card.style.position = "relative";
+          card.style.left = "auto";
+          card.style.top = "auto";
+          card.style.transform = `translateX(0) translateZ(0) rotateX(0) rotateY(0) scale(${t.scale})`;
+        }
+
+        // Layout: flex row centered (simpler + more readable than 3D absolute)
+        carousel.style.display = "flex";
+        carousel.style.flexWrap = "nowrap";
+        carousel.style.gap = "8px";
+        carousel.style.alignItems = "center";
+        carousel.style.justifyContent = "center";
+        carousel.style.padding = "14px 12px 10px";
+        carousel.style.height = "auto";
+        carousel.style.perspective = "none";
+
+        // Parallax hover on the whole carousel strip
+        let ticking = false;
+        carousel.addEventListener("mousemove", (ev) => {
+          if(ticking) return;
+          ticking = true;
+          requestAnimationFrame(() => {
+            const rect = carousel.getBoundingClientRect();
+            const cx = rect.left + rect.width / 2;
+            const dx = (ev.clientX - cx) / rect.width; // -0.5 .. 0.5
+            tcards.forEach((card, i) => {
+              const t = targets[i];
+              const shift = dx * 6 * (i - mid) * 0.18;
+              const rotY = t.rotY + dx * 4;
+              const rotX = t.rotX - ((ev.clientY - rect.top - rect.height/2) / rect.height) * 6;
+              card.style.transform = `translateX(${shift}px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${t.scale})`;
+              card.style.transition = "transform .08s linear";
+            });
+            ticking = false;
+          });
+        });
+        carousel.addEventListener("mouseleave", () => {
+          tcards.forEach((card, i) => {
+            card.style.transition = "transform .35s cubic-bezier(.22,.68,0,1.2)";
+            card.style.transform = `translateX(0) rotateX(0) rotateY(0) scale(${targets[i].scale})`;
+          });
+        });
+
+        // Click to switch tab
+        tcards.forEach(card => {
+          card.addEventListener("click", () => {
+            const tab = card.dataset.ttab;
+            if(!tab) return;
+            // active state
+            tcards.forEach(c => c.classList.remove("tcard-active"));
+            card.classList.add("tcard-active");
+            // pop animation
+            if(typeof gsap !== "undefined"){
+              gsap.fromTo(card, { scale: targets[tcards.indexOf(card)].scale * 0.93 },
+                { scale: targets[tcards.indexOf(card)].scale, duration: 0.4, ease: "back.out(2.5)" });
+            }
+            // update header text
+            const meta = TEACHER_TAB_META[tab] || {};
+            const titleEl = $("#teacher-section-title");
+            const subEl   = $("#teacher-section-sub");
+            if(titleEl) titleEl.textContent = meta.title || tab;
+            if(subEl)   subEl.textContent   = meta.sub   || "";
+            setTeacherContent(tab);
+          });
+        });
+      }
+
+
+      function logout(){
+        session = { role: null, name: null, studentId: null };
+        saveSession();
+        showView("home");
+      }
+
+      function seedDemoData(){
+        state = defaultState();
+
+        const students = getStudents();
+        const todayISO = state.today.dateISO;
+        state.today.classInfo = {
+          title: "Advanced Grammar + Writing",
+          weekNo: "Week 3",
+          weekDescription: "Comprehension, tense accuracy, structured writing.",
+          startTime: "09:30",
+          endTime: "10:45",
+          classDetails: "Today: Review tenses, writing framework, and short timed practice."
+        };
+
+        // Attendance - first 8 present, 2 absent
+        state.today.attendance = {};
+        students.forEach((s, idx) => {
+          state.today.attendance[s.id] = { status: idx < 8 ? "present" : "absent", note: "" };
+        });
+
+        // Tasks
+        state.today.tasks = [
+          { id: uid("task"), title: "Writing Practice (20 mins)", content: "Write a 250-word paragraph using the writing framework. Focus on tense consistency.\nSubmit a screenshot or text in class.", createdAt: Date.now() },
+          { id: uid("task"), title: "Grammar Drill (15 mins)", content: "Complete 25 tense conversion questions. Mark the ones you find confusing.", createdAt: Date.now() }
+        ];
+
+        // Tests - sample scores for first 6 students
+        const sampleScores = [86, 92, 61, 78, 88, 74, 55, 90, 68, 83];
+        const test1 = { id: uid("test"), testName: "Test Series - Tense Accuracy", totalMarks: 100, dateISO: todayISO, scores: {} };
+        students.forEach((s, idx) => { test1.scores[s.id] = sampleScores[idx] ?? 70; });
+        state.today.tests = [test1];
+
+        // Upcoming
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate()+1);
+        const afterTomorrow = new Date();
+        afterTomorrow.setDate(afterTomorrow.getDate()+3);
+
+        const u1 = {
+          id: uid("up"),
+          title: "Week 3 - Listening + Speaking",
+          dateISO: isoDate(tomorrow),
+          startTime: "11:00",
+          endTime: "12:00",
+          weekNo: "Week 3",
+          weekDescription: "Listening drills, guided speaking, confidence building.",
+          classDetails: "Short listening clips + roleplay speaking practice.",
+          cancelled: false,
+          studentRsvps: {},
+          tasks: [
+            { id: uid("task"), title: "Listening Notes", content: "Listen and write 8 bullet notes. Bring your notes to class.", createdAt: Date.now() }
+          ]
+        };
+
+        const u2 = {
+          id: uid("up"),
+          title: "Week 4 - Reading Comprehension",
+          dateISO: isoDate(afterTomorrow),
+          startTime: "09:00",
+          endTime: "10:00",
+          weekNo: "Week 4",
+          weekDescription: "Inference questions + vocabulary in context.",
+          classDetails: "Two passages, timed questions, and vocabulary recap.",
+          cancelled: false,
+          studentRsvps: {},
+          tasks: [
+            { id: uid("task"), title: "Vocabulary Challenge", content: "Learn 12 words from class passage. Write 1 sentence for each.", createdAt: Date.now() }
+          ]
+        };
+
+        state.upcoming = [u1, u2];
+
+        // default RSVP: attending for all students
+        for(const up of state.upcoming){
+          for(const s of students){
+            up.studentRsvps[s.id] = "attending";
+          }
+        }
+
+        saveState();
+        refreshStudentSelect();
+      }
+
+      function validateTeacherLogin(){
+        const username = ($("#t-username").value || "").trim();
+        const password = ($("#t-code").value || "").trim();
+        if(!username){ alert("Please enter teacher username."); return null; }
+        if(!password){ alert("Please enter teacher password."); return null; }
+        const teacher = BackendService.authTeacher(username, password);
+        if(!teacher){
+          alert("Invalid username or password. Check the credentials shown below the form.");
+          return null;
+        }
+        return teacher;
+      }
+
+      function validateStudentLogin(){
+        const studentId = $("#s-student").value;
+        const password = ($("#s-code").value || "").trim();
+        if(!studentId){ alert("Select a student."); return null; }
+        if(!password){ alert("Please enter student password."); return null; }
+        const stu = BackendService.getStudentById(studentId);
+        if(!stu){ alert("Student not found."); return null; }
+        // Authenticate via BackendService (hashed comparison)
+        const verified = BackendService.authStudent(stu.username, password);
+        if(!verified){
+          alert("Wrong password. Please enter your personal password.");
+          return null;
+        }
+        return stu;
+      }
+
+      function refreshStudentSelect(){
+        const sel = $("#s-student");
+        const emptyHint = $("#student-empty-hint");
+        sel.innerHTML = "";
+        const students = getStudents();
+        emptyHint.style.display = "none";
+        const opt0 = document.createElement("option");
+        opt0.value = "";
+        opt0.textContent = "Select your name";
+        sel.appendChild(opt0);
+        for(const s of students){
+          const opt = document.createElement("option");
+          opt.value = s.id;
+          opt.textContent = `${s.name} (${s.rollNo})`;
+          sel.appendChild(opt);
+        }
+        if(session.role === "student" && session.studentId){
+          sel.value = session.studentId;
+        }
+      }
+
+      function setTeacherContent(tab){
+        const contentEl = $("#teacher-content");
+        contentEl.innerHTML = "";
+        if(tab === "today") renderTeacherToday();
+        if(tab === "upcoming") renderTeacherUpcoming();
+        if(tab === "attendance") renderTeacherAttendance();
+        if(tab === "tests") renderTeacherTests();
+        if(tab === "tasks") renderTeacherTasks();
+        if(tab === "students") renderTeacherStudents();
+        // Entrance animation on content swap
+        contentEl.classList.remove("teacher-content-enter");
+        void contentEl.offsetWidth; // reflow
+        contentEl.classList.add("teacher-content-enter");
+        if(typeof gsap !== "undefined"){
+          const children = Array.from(contentEl.children);
+          gsap.fromTo(children,
+            { opacity:0, y:12, scale:.98 },
+            { opacity:1, y:0, scale:1, duration:.45, ease:"power3.out", stagger:.045, clearProps:"scale" }
+          );
+        }
+      }
+
+      function setStudentContent(tab){
+        setTab($("#student-tabs"), tab);
+        $("#student-content").innerHTML = "";
+        if(tab === "today") renderStudentToday();
+        if(tab === "upcoming") renderStudentUpcoming();
+        if(tab === "week") renderStudentWeekWise();
+        if(tab === "tasks") renderStudentTasks();
+      }
+
+      // -------------------- TEACHER: Today Class --------------------
+      function renderTeacherToday(){
+        ensureTodayIfStale();
+        const ci = state.today.classInfo;
+        const todayISO = state.today.dateISO;
+
+        const html = `
+          <div class="note">
+            <b>Today (${escapeHtml(todayISO)})</b> - Week-wise description, class timing, and class details for the current day.
+          </div>
+          <div class="panel-body" style="padding:0; gap:12px">
+            <div class="grid-2">
+              <div class="field">
+                <label>Class title</label>
+                <input type="text" id="t-today-title" value="${escapeHtml(ci.title)}" />
+              </div>
+              <div class="field">
+                <label>Week label</label>
+                <input type="text" id="t-today-week" value="${escapeHtml(ci.weekNo)}" placeholder="e.g., Week 3" />
+              </div>
+            </div>
+            <div class="grid-2">
+              <div class="field">
+                <label>Start time</label>
+                <input type="time" id="t-today-start" value="${escapeHtml(ci.startTime)}" />
+              </div>
+              <div class="field">
+                <label>End time</label>
+                <input type="time" id="t-today-end" value="${escapeHtml(ci.endTime)}" />
+              </div>
+            </div>
+            <div class="field">
+              <label>Week description</label>
+              <textarea id="t-today-week-desc" placeholder="What's the plan for this week?">${escapeHtml(ci.weekDescription)}</textarea>
+            </div>
+            <div class="field">
+              <label>Class details</label>
+              <textarea id="t-today-details" placeholder="Agenda, outcomes, and notes">${escapeHtml(ci.classDetails)}</textarea>
+            </div>
+            <div class="actions">
+              <button class="btn primary" id="t-save-today">
+                <span class="spark" aria-hidden="true"></span>
+                Save today class info
+              </button>
+              <button class="btn secondary" id="t-reset-today">
+                Reset tasks/tests/attendance for today
+              </button>
+              <div class="small">Resets only today's tasks, tests, and attendance (not upcoming schedule).</div>
+            </div>
+          </div>
+        `;
+        $("#teacher-content").innerHTML = html;
+
+        $("#t-save-today").addEventListener("click", () => {
+          state.today.classInfo.title = $("#t-today-title").value.trim();
+          state.today.classInfo.weekNo = $("#t-today-week").value.trim() || "Week 1";
+          state.today.classInfo.startTime = $("#t-today-start").value;
+          state.today.classInfo.endTime = $("#t-today-end").value;
+          state.today.classInfo.weekDescription = $("#t-today-week-desc").value.trim();
+          state.today.classInfo.classDetails = $("#t-today-details").value.trim();
+          saveState();
+          setTeacherContent("today");
+        });
+
+        $("#t-reset-today").addEventListener("click", () => {
+          if(!confirm("Reset today tasks/tests/attendance?")) return;
+          state.today.attendance = {};
+          state.today.tasks = [];
+          state.today.tests = [];
+          saveState();
+          setTeacherContent("attendance");
+        });
+      }
+
+      // -------------------- TEACHER: Students --------------------
+      function renderTeacherStudents(){
+        const students = getStudents();
+        const html = `
+          <div class="note">
+            All 10 student accounts are managed by the backend service. Teachers mark attendance, upload tasks/tests, and students log in with their credentials.
+          </div>
+          <div class="divider"></div>
+          <div class="list">
+            ${students.map(s => `
+              <div class="card">
+                <div class="left">
+                  <h3>${escapeHtml(s.name)} <span class="muted">(${escapeHtml(s.rollNo)})</span></h3>
+                  <p class="small">
+                    Roll: <span class="mono">${escapeHtml(s.rollNo)}</span> &nbsp;·&nbsp; Username: <span class="mono">${escapeHtml(s.username)}</span>
+                  </p>
+                </div>
+                <div class="right">
+                  <span class="tag ${(state.today.attendance?.[s.id]?.status === "absent") ? "bad" : "ok"}">${state.today.attendance?.[s.id]?.status === "absent" ? "Absent" : state.today.attendance?.[s.id] ? "Present" : "Not marked"}</span>
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        `;
+        $("#teacher-content").innerHTML = html;
+      }
+
+      // -------------------- TEACHER: Attendance --------------------
+      function renderTeacherAttendance(){
+        ensureTodayIfStale();
+        const sum = attendanceSummaryForToday();
+        const students = getStudents();
+        const att = state.today.attendance || {};
+
+        const html = `
+          <div class="row">
+            <span class="tag ok">Present: ${sum.present}</span>
+            <span class="tag bad">Absent: ${sum.absent}</span>
+            <span class="tag info">Marked: ${sum.totalMarked}/${students.length}</span>
+          </div>
+
+          <div class="note">
+            Mark today's attendance for each student. Students can view today's tasks even if they're marked absent.
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th style="min-width:220px">Student</th>
+                  <th style="min-width:170px">Status</th>
+                  <th style="min-width:320px">Note (optional)</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${students.length ? students.map(s => {
+                  const rec = att[s.id] || { status: "present", note: "" };
+                  const status = rec.status || "present";
+                  return `
+                    <tr>
+                      <td>
+                        <b>${escapeHtml(s.name)}</b><div class="small">${escapeHtml(s.rollNo || "")}</div>
+                      </td>
+                      <td>
+                        <select data-status="${escapeHtml(s.id)}">
+                          <option value="present" ${status === "present" ? "selected" : ""}>Present</option>
+                          <option value="absent" ${status === "absent" ? "selected" : ""}>Absent</option>
+                        </select>
+                      </td>
+                      <td>
+                        <textarea data-note="${escapeHtml(s.id)}" style="min-height:70px">${escapeHtml(rec.note || "")}</textarea>
+                      </td>
+                    </tr>
+                  `;
+                }).join("") : `
+                  <tr><td colspan="3" class="muted">Add students first in the "Students" tab.</td></tr>
+                `}
+              </tbody>
+            </table>
+          </div>
+
+          <div class="actions">
+            <button class="btn primary" id="t-save-attendance">
+              <span class="spark" aria-hidden="true"></span>
+              Save attendance
+            </button>
+            <button class="btn secondary" id="t-mark-all-present">Mark all present</button>
+            <button class="btn secondary" id="t-mark-all-absent">Mark all absent</button>
+          </div>
+        `;
+        $("#teacher-content").innerHTML = html;
+
+        $("#t-save-attendance").addEventListener("click", () => {
+          for(const s of getStudents()){
+            const statusSel = document.querySelector(`[data-status="${cssEscape(s.id)}"]`);
+            const noteEl = document.querySelector(`[data-note="${cssEscape(s.id)}"]`);
+            const status = statusSel ? statusSel.value : "present";
+            const note = noteEl ? noteEl.value.trim() : "";
+            state.today.attendance[s.id] = { status, note };
+          }
+          saveState();
+          setTeacherContent("attendance");
+        });
+
+        $("#t-mark-all-present").addEventListener("click", () => {
+          if(!confirm("Mark all students present for today?")) return;
+          for(const s of getStudents()){
+            state.today.attendance[s.id] = { status: "present", note: "" };
+          }
+          saveState();
+          setTeacherContent("attendance");
+        });
+        $("#t-mark-all-absent").addEventListener("click", () => {
+          if(!confirm("Mark all students absent for today?")) return;
+          for(const s of getStudents()){
+            state.today.attendance[s.id] = { status: "absent", note: "" };
+          }
+          saveState();
+          setTeacherContent("attendance");
+        });
+      }
+
+      // -------------------- TEACHER: Upcoming Classes --------------------
+      function renderTeacherUpcoming(){
+        ensureTodayIfStale();
+        const ups = state.upcoming || [];
+        const students = getStudents();
+
+        const html = `
+          <div class="note">
+            Create upcoming classes with detailed info. Students can cancel if not attending (RSVP). Teachers see each student's RSVP state.
+          </div>
+
+          <div class="panel" style="border-radius:var(--radius-lg); box-shadow:none; background:rgba(255,255,255,.52);">
+            <div class="panel-header" style="border-bottom:1px solid rgba(14,27,42,.08); border-radius:var(--radius-lg); padding:14px 14px">
+              <div>
+                <div class="title" style="font-size:16px">Add Upcoming Class</div>
+                <div class="subtitle">Includes week label, class timing, and class details.</div>
+              </div>
+            </div>
+            <div class="panel-body">
+              <div class="grid-2">
+                <div class="field">
+                  <label>Title</label>
+                  <input type="text" id="t-up-title" placeholder="e.g., Week 4 - Reading Comprehension" />
+                </div>
+                <div class="field">
+                  <label>Week label</label>
+                  <input type="text" id="t-up-week" placeholder="e.g., Week 4" />
+                </div>
+              </div>
+              <div class="grid-2">
+                <div class="field">
+                  <label>Date</label>
+                  <input type="date" id="t-up-date" />
+                </div>
+                <div class="field">
+                  <label>Class timing</label>
+                  <div class="row" style="gap:10px">
+                    <input type="time" id="t-up-start" style="flex:1" />
+                    <input type="time" id="t-up-end" style="flex:1" />
+                  </div>
+                </div>
+              </div>
+              <div class="field">
+                <label>Week description</label>
+                <textarea id="t-up-week-desc" placeholder="What's the focus for the week?"></textarea>
+              </div>
+              <div class="field">
+                <label>Class details</label>
+                <textarea id="t-up-details" placeholder="Agenda, outcomes, and key points"></textarea>
+              </div>
+              <div class="actions">
+                <button class="btn primary" id="t-add-up">
+                  <span class="spark" aria-hidden="true"></span>
+                  Add upcoming class
+                </button>
+                <div class="small">Default RSVP: attending (students can cancel later).</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="list">
+            ${ups.length ? ups.map(up => {
+              const cancelled = !!up.cancelled;
+              const dateStr = up.dateISO;
+              const attendingCount = students.length
+                ? students.filter(s => (up.studentRsvps?.[s.id] || "attending") === "attending").length
+                : 0;
+              const notAttendingCount = students.length ? students.filter(s => (up.studentRsvps?.[s.id] || "attending") === "not_attending").length : 0;
+              return `
+                <div class="card">
+                  <div class="left">
+                    <h3>${escapeHtml(up.title)}</h3>
+                    <p>
+                      <span class="mono">${escapeHtml(dateStr)}</span> - ${escapeHtml(formatTimeRange(up.startTime, up.endTime))}
+                      <br/>
+                      ${escapeHtml(up.weekNo || "")} - ${escapeHtml(up.weekDescription || "")}
+                      <br/>
+                      <span class="muted">${escapeHtml(up.classDetails || "")}</span>
+                    </p>
+                    <div class="row" style="margin-top:8px">
+                      ${cancelled ? '<span class="tag bad">Class cancelled</span>' : '<span class="tag ok">Active</span>'}
+                      <span class="tag info">Attending: ${attendingCount}</span>
+                      <span class="tag">Cancelled-by-student: ${notAttendingCount}</span>
+                      <span class="tag">Tasks: ${up.tasks?.length || 0}</span>
+                    </div>
+                  </div>
+                  <div class="right">
+                    <button class="btn secondary" data-up-id="${escapeHtml(up.id)}" data-act="edit">Edit</button>
+                    <button class="btn secondary" data-up-id="${escapeHtml(up.id)}" data-act="toggle-cancel">${cancelled ? "Uncancel" : "Cancel class"}</button>
+                    <button class="btn secondary" data-up-id="${escapeHtml(up.id)}" data-act="delete">Delete</button>
+                  </div>
+                </div>
+              `;
+            }).join("") : `
+              <div class="note">No upcoming classes yet. Add one above.</div>
+            `}
+          </div>
+        `;
+
+        $("#teacher-content").innerHTML = html;
+        // default date: tomorrow
+        const d = new Date();
+        d.setDate(d.getDate()+1);
+        $("#t-up-date").value = isoDate(d);
+        $("#t-up-start").value = "10:00";
+        $("#t-up-end").value = "11:00";
+
+        $("#t-add-up").addEventListener("click", () => {
+          const title = $("#t-up-title").value.trim();
+          const weekNo = $("#t-up-week").value.trim() || "Week";
+          const dateISO = $("#t-up-date").value;
+          const startTime = $("#t-up-start").value;
+          const endTime = $("#t-up-end").value;
+          const weekDescription = $("#t-up-week-desc").value.trim();
+          const classDetails = $("#t-up-details").value.trim();
+          if(!title){ alert("Enter upcoming class title."); return; }
+          if(!dateISO){ alert("Enter date."); return; }
+          if(!startTime || !endTime){ alert("Enter start and end times."); return; }
+
+          const up = {
+            id: uid("up"),
+            title,
+            dateISO,
+            startTime,
+            endTime,
+            weekNo,
+            weekDescription,
+            classDetails,
+            cancelled: false,
+            studentRsvps: {},
+            tasks: []
+          };
+          for(const s of students){
+            up.studentRsvps[s.id] = "attending";
+          }
+          state.upcoming.unshift(up);
+          saveState();
+          setTeacherContent("upcoming");
+        });
+
+        $$("[data-up-id]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const upId = btn.dataset.upId;
+            const act = btn.dataset.act;
+            const up = state.upcoming.find(x => x.id === upId);
+            if(!up) return;
+
+            if(act === "delete"){
+              if(!confirm("Delete this upcoming class?")) return;
+              state.upcoming = state.upcoming.filter(x => x.id !== upId);
+              saveState();
+              setTeacherContent("upcoming");
+              return;
+            }
+
+            if(act === "toggle-cancel"){
+              up.cancelled = !up.cancelled;
+              saveState();
+              setTeacherContent("upcoming");
+              return;
+            }
+
+            if(act === "edit"){
+              // lightweight inline edit using prompts (keeps file smaller)
+              const nextTitle = prompt("Edit title:", up.title);
+              if(nextTitle === null) return;
+              const nextWeek = prompt("Edit week label:", up.weekNo || "");
+              if(nextWeek === null) return;
+              const nextWeekDesc = prompt("Edit week description:", up.weekDescription || "");
+              if(nextWeekDesc === null) return;
+              const nextDetails = prompt("Edit class details:", up.classDetails || "");
+              if(nextDetails === null) return;
+              up.title = nextTitle.trim() || up.title;
+              up.weekNo = nextWeek.trim() || up.weekNo;
+              up.weekDescription = nextWeekDesc.trim();
+              up.classDetails = nextDetails.trim();
+              saveState();
+              setTeacherContent("upcoming");
+            }
+          });
+        });
+      }
+
+      // -------------------- TEACHER: Tests --------------------
+      function renderTeacherTests(){
+        ensureTodayIfStale();
+        const students = getStudents();
+        const ci = state.today.classInfo;
+        const tests = state.today.tests || [];
+        const sum = attendanceSummaryForToday();
+
+        const html = `
+          <div class="row">
+            <span class="tag info">Today: ${escapeHtml(ci.title)}</span>
+            <span class="tag ok">Present: ${sum.present}</span>
+            <span class="tag bad">Absent: ${sum.absent}</span>
+          </div>
+
+          <div class="note">
+            Upload test series for <b>today</b>. Performance is calculated using uploaded scores.
+          </div>
+
+          <div class="panel" style="border-radius:var(--radius-lg); box-shadow:none; background:rgba(255,255,255,.52);">
+            <div class="panel-header" style="border-bottom:1px solid rgba(14,27,42,.08); border-radius:var(--radius-lg); padding:14px 14px">
+              <div>
+                <div class="title" style="font-size:16px">Add Test Series (Today)</div>
+                <div class="subtitle">Scores are entered per student.</div>
+              </div>
+            </div>
+            <div class="panel-body">
+              <div class="grid-2">
+                <div class="field">
+                  <label>Test name</label>
+                  <input type="text" id="t-test-name" placeholder="e.g., Test Series - Reading Comprehension" />
+                </div>
+                <div class="field">
+                  <label>Total marks</label>
+                  <input type="number" id="t-test-marks" value="100" min="1" />
+                </div>
+              </div>
+              <div class="table-wrap" style="margin-top:4px">
+                <table>
+                  <thead>
+                    <tr>
+                      <th style="min-width:220px">Student</th>
+                      <th style="min-width:240px">Score</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${students.length ? students.map(s => `
+                      <tr>
+                        <td><b>${escapeHtml(s.name)}</b><div class="small">Roll ${escapeHtml(s.rollNo || "-")}</div></td>
+                        <td>
+                          <input type="number" data-score="${escapeHtml(s.id)}" placeholder="e.g., 78" min="0" max="${escapeHtml(10000)}" />
+                        </td>
+                      </tr>
+                    `).join("") : `
+                      <tr><td colspan="2" class="muted">Add students first in the "Students" tab.</td></tr>
+                    `}
+                  </tbody>
+                </table>
+              </div>
+              <div class="actions">
+                <button class="btn primary" id="t-add-test">
+                  <span class="spark" aria-hidden="true"></span>
+                  Add test series
+                </button>
+                <button class="btn secondary" id="t-clear-test-form">Clear scores</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="note">
+            <b>Performance (Today)</b> - based on average score across uploaded tests.
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th style="min-width:220px">Student</th>
+                  <th>Attendance</th>
+                  <th>Avg Score</th>
+                  <th>Best Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${students.length ? students.map(s => {
+                  const attRec = state.today.attendance?.[s.id] || { status: "present", note: "" };
+                  const status = attRec.status === "absent" ? "absent" : "present";
+                  const perf = computePerformanceToday().perf[s.id];
+                  const avg = perf?.avg;
+                  const best = perf?.best;
+                  const scoreStr = typeof avg === "number" ? `${avg.toFixed(1)}%` : "-";
+                  const bestStr = typeof best === "number" ? `${best}%` : "-";
+                  const statusTag = status === "present"
+                    ? `<span class="tag ok">Present</span>`
+                    : `<span class="tag bad">Absent</span>`;
+                  return `
+                    <tr>
+                      <td><b>${escapeHtml(s.name)}</b><div class="small">Roll ${escapeHtml(s.rollNo || "-")}</div></td>
+                      <td>${statusTag}</td>
+                      <td>${scoreStr}</td>
+                      <td>${bestStr}</td>
+                    </tr>
+                  `;
+                }).join("") : `
+                  <tr><td colspan="4" class="muted">No students yet.</td></tr>
+                `}
+              </tbody>
+            </table>
+          </div>
+
+          ${tests.length ? `
+            <div class="divider"></div>
+            <div class="list">
+              ${tests.map(test => `
+                <div class="card">
+                  <div class="left">
+                    <h3>${escapeHtml(test.testName)}</h3>
+                    <p>
+                      Marks: ${escapeHtml(String(test.totalMarks))} - Date: <span class="mono">${escapeHtml(test.dateISO || state.today.dateISO)}</span>
+                    </p>
+                  </div>
+                  <div class="right">
+                    <button class="btn secondary" data-del-test="${escapeHtml(test.id)}">Delete</button>
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          ` : `
+            <div class="note">No test series uploaded for today yet.</div>
+          `}
+        `;
+
+        $("#teacher-content").innerHTML = html;
+
+        $("#t-clear-test-form").addEventListener("click", () => {
+          $$("input[data-score]").forEach(el => el.value = "");
+        });
+
+        $("#t-add-test").addEventListener("click", () => {
+          const testName = $("#t-test-name").value.trim();
+          const totalMarks = Number($("#t-test-marks").value || 100);
+          if(!testName){ alert("Enter test name."); return; }
+          if(!Number.isFinite(totalMarks) || totalMarks <= 0){ alert("Enter total marks."); return; }
+          const scores = {};
+          for(const s of getStudents()){
+            const el = document.querySelector(`[data-score="${cssEscape(s.id)}"]`);
+            const val = el ? el.value.trim() : "";
+            if(val === "") continue;
+            const num = Number(val);
+            if(!Number.isFinite(num)) continue;
+            scores[s.id] = num;
+          }
+          if(!Object.keys(scores).length){
+            alert("Enter at least one student score.");
+            return;
+          }
+          state.today.tests.push({
+            id: uid("test"),
+            testName,
+            totalMarks,
+            dateISO: state.today.dateISO,
+            scores
+          });
+          saveState();
+          setTeacherContent("tests");
+        });
+
+        $$("[data-del-test]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const tid = btn.dataset.delTest;
+            if(!confirm("Delete this test series?")) return;
+            state.today.tests = (state.today.tests || []).filter(t => t.id !== tid);
+            saveState();
+            setTeacherContent("tests");
+          });
+        });
+      }
+
+      // -------------------- TEACHER: Tasks --------------------
+      function renderTeacherTasks(){
+        ensureTodayIfStale();
+        const ups = state.upcoming || [];
+        const students = getStudents();
+        const today = state.today;
+
+        const options = [
+          `<option value="today">Today (${escapeHtml(today.dateISO)})</option>`,
+          ...ups.map(up => `
+            <option value="${escapeHtml(up.id)}" ${up.cancelled ? "disabled" : ""}>
+              Upcoming: ${escapeHtml(up.title)} (${escapeHtml(up.dateISO)})
+            </option>
+          `)
+        ].join("");
+
+        const html = `
+          <div class="note">
+            Upload student tasks. Tasks uploaded for <b>today</b> are visible to students on present and absent days.
+            You can also upload tasks for an upcoming class.
+          </div>
+
+          <div class="panel" style="border-radius:var(--radius-lg); box-shadow:none; background:rgba(255,255,255,.52);">
+            <div class="panel-header" style="border-bottom:1px solid rgba(14,27,42,.08); border-radius:var(--radius-lg); padding:14px 14px">
+              <div>
+                <div class="title" style="font-size:16px">Upload Task</div>
+                <div class="subtitle">Choose a class (today or an upcoming session).</div>
+              </div>
+            </div>
+            <div class="panel-body">
+              <div class="grid-2">
+                <div class="field">
+                  <label>Upload to</label>
+                  <select id="t-task-target">
+                    ${options}
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Task title</label>
+                  <input type="text" id="t-task-title" placeholder="e.g., Homework - Writing Drill" />
+                </div>
+              </div>
+              <div class="field">
+                <label>Task content</label>
+                <textarea id="t-task-content" placeholder="Details students should follow..."></textarea>
+              </div>
+              <div class="actions">
+                <button class="btn primary" id="t-add-task">
+                  <span class="spark" aria-hidden="true"></span>
+                  Add task
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="list">
+            <div class="note"><b>Today Tasks</b></div>
+            ${(today.tasks || []).length ? today.tasks.map(task => `
+              <div class="card">
+                <div class="left">
+                  <h3>${escapeHtml(task.title)}</h3>
+                  <p>${escapeHtml(task.content)}</p>
+                </div>
+                <div class="right">
+                  <button class="btn secondary" data-del-task-today="${escapeHtml(task.id)}">Delete</button>
+                </div>
+              </div>
+            `).join("") : `<div class="note">No tasks for today yet.</div>`}
+          </div>
+
+          ${ups.length ? `
+            <div class="divider"></div>
+            <div class="list">
+              <div class="note"><b>Upcoming Tasks</b></div>
+              ${ups.map(up => `
+                <div class="card">
+                  <div class="left">
+                    <h3>${escapeHtml(up.title)} <span class="muted">(${escapeHtml(up.dateISO)})</span></h3>
+                    <p class="small">${escapeHtml(up.weekNo || "")} - ${escapeHtml(up.weekDescription || "")}</p>
+                    ${(up.tasks || []).length
+                      ? `<div style="margin-top:8px" class="list">
+                          ${(up.tasks || []).map(task => `
+                            <div class="card" style="margin:0; padding:10px 10px; background:rgba(255,255,255,.52)">
+                              <div class="left">
+                                <h3 style="margin:0">${escapeHtml(task.title)}</h3>
+                                <p style="margin-top:6px">${escapeHtml(task.content)}</p>
+                              </div>
+                              <div class="right">
+                                <button class="btn secondary" data-del-task-up="${escapeHtml(up.id)}" data-task-id="${escapeHtml(task.id)}">Delete</button>
+                              </div>
+                            </div>
+                          `).join("")}
+                        </div>`
+                      : `<div class="note" style="margin-top:8px">No tasks uploaded yet.</div>`}
+                  </div>
+                  <div class="right">
+                    <span class="tag ${up.cancelled ? "bad" : "ok"}">${up.cancelled ? "Cancelled" : "Active"}</span>
+                    <span class="tag">Tasks: ${up.tasks?.length || 0}</span>
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          ` : ``}
+        `;
+        $("#teacher-content").innerHTML = html;
+
+        $("#t-add-task").addEventListener("click", () => {
+          const target = $("#t-task-target").value;
+          const title = $("#t-task-title").value.trim();
+          const content = $("#t-task-content").value.trim();
+          if(!title){ alert("Enter task title."); return; }
+          if(!content){ alert("Enter task content."); return; }
+
+          if(target === "today"){
+            today.tasks = today.tasks || [];
+            today.tasks.push({ id: uid("task"), title, content, createdAt: Date.now() });
+          }else{
+            const up = state.upcoming.find(x => x.id === target);
+            if(!up){ alert("Upcoming class not found."); return; }
+            up.tasks = up.tasks || [];
+            up.tasks.push({ id: uid("task"), title, content, createdAt: Date.now() });
+          }
+          saveState();
+          setTeacherContent("tasks");
+        });
+
+        $$("[data-del-task-today]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const tid = btn.dataset.delTaskToday;
+            if(!confirm("Delete this today task?")) return;
+            state.today.tasks = (state.today.tasks || []).filter(t => t.id !== tid);
+            saveState();
+            setTeacherContent("tasks");
+          });
+        });
+
+        $$("[data-del-task-up]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const upId = btn.dataset.delTaskUp;
+            const taskId = btn.dataset.taskId;
+            const up = state.upcoming.find(x => x.id === upId);
+            if(!up) return;
+            if(!confirm("Delete this upcoming task?")) return;
+            up.tasks = (up.tasks || []).filter(t => t.id !== taskId);
+            saveState();
+            setTeacherContent("tasks");
+          });
+        });
+      }
+
+      // -------------------- STUDENT: Today --------------------
+      function renderStudentToday(){
+        ensureTodayIfStale();
+        const studentId = session.studentId;
+        const s = studentById(studentId);
+        if(!s){
+          $("#student-content").innerHTML = `<div class="note">Student not found. Log in again.</div>`;
+          return;
+        }
+        const today = state.today;
+        const ci = today.classInfo;
+        const attRec = today.attendance?.[studentId] || null;
+        const status = attRec?.status || "present";
+        const statusTag = status === "present"
+          ? `<span class="tag ok">Present today</span>`
+          : `<span class="tag bad">Absent today</span>`;
+        const note = attRec?.note ? `<div class="small muted" style="margin-top:8px">Teacher note: ${escapeHtml(attRec.note)}</div>` : "";
+        const perf = computePerformanceToday().perf[studentId];
+        const avgStr = typeof perf?.avg === "number" ? `${perf.avg.toFixed(1)}%` : "-";
+        const bestStr = typeof perf?.best === "number" ? `${perf.best}%` : "-";
+
+        const html = `
+          <div class="row">
+            ${statusTag}
+            <span class="tag info">Today: ${escapeHtml(today.dateISO)}</span>
+            <span class="tag">Timing: ${escapeHtml(formatTimeRange(ci.startTime, ci.endTime))}</span>
+          </div>
+          <div class="note">
+            <b>${escapeHtml(ci.title)}</b><br/>
+            ${escapeHtml(ci.weekNo)} - ${escapeHtml(ci.weekDescription)}
+          </div>
+          <div class="card">
+            <div class="left">
+              <h3>Class Details</h3>
+              <p>${escapeHtml(ci.classDetails)}</p>
+              ${note}
+            </div>
+            <div class="right">
+              <span class="tag info">Performance</span>
+              <div class="tag">Avg: ${escapeHtml(avgStr)}</div>
+              <div class="tag">Best: ${escapeHtml(bestStr)}</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+          <div class="list">
+            <div class="note"><b>Tasks (Today)</b></div>
+            ${(today.tasks || []).length ? today.tasks.map(task => `
+              <div class="card">
+                <div class="left">
+                  <h3>${escapeHtml(task.title)}</h3>
+                  <p>${escapeHtml(task.content)}</p>
+                </div>
+                <div class="right">
+                  <span class="tag ${status === "present" ? "ok" : "info"}">${status === "present" ? "For present students" : "For absent students (visible)"}</span>
+                </div>
+              </div>
+            `).join("") : `<div class="note">No tasks uploaded for today yet.</div>`}
+          </div>
+        `;
+        $("#student-content").innerHTML = html;
+      }
+
+      // -------------------- STUDENT: Upcoming --------------------
+      function renderStudentUpcoming(){
+        ensureTodayIfStale();
+        const studentId = session.studentId;
+        const s = studentById(studentId);
+        if(!s){
+          $("#student-content").innerHTML = `<div class="note">Student not found. Log in again.</div>`;
+          return;
+        }
+        const ups = state.upcoming || [];
+
+        const html = `
+          <div class="note">
+            Upcoming classes are shown with week-wise info. Use <b>Cancel</b> if you're not attending.
+            Your cancellation affects only your RSVP (teacher still sees it).
+          </div>
+
+          <div class="list">
+            ${ups.length ? ups.map(up => {
+              const studentRsvp = up.studentRsvps?.[studentId] || "attending";
+              const cancelledByStudent = studentRsvp === "not_attending";
+              const classCancelled = !!up.cancelled;
+              const tasksCount = up.tasks?.length || 0;
+              return `
+                <div class="card">
+                  <div class="left">
+                    <h3>${escapeHtml(up.title)}</h3>
+                    <p>
+                      <span class="mono">${escapeHtml(up.dateISO)}</span> - ${escapeHtml(formatTimeRange(up.startTime, up.endTime))}
+                      <br/>
+            ${escapeHtml(up.weekNo || "")} - ${escapeHtml(up.weekDescription || "")}
+                      <br/>
+                      <span class="muted">${escapeHtml(up.classDetails || "")}</span>
+                    </p>
+                    <div class="row" style="margin-top:8px">
+                      <span class="tag ${classCancelled ? "bad" : "ok"}">${classCancelled ? "Class cancelled" : "Scheduled"}</span>
+                      <span class="tag ${cancelledByStudent ? "bad" : "ok"}">${cancelledByStudent ? "Not attending" : "Attending"}</span>
+                      <span class="tag">Tasks: ${escapeHtml(String(tasksCount))}</span>
+                    </div>
+                  </div>
+                  <div class="right">
+                    <button class="btn secondary" data-up="${escapeHtml(up.id)}" data-act="cancel-rsvp" ${classCancelled ? "disabled" : ""}>
+                      ${cancelledByStudent ? "Cancelled" : "Cancel"}
+                    </button>
+                    <button class="btn secondary" data-up="${escapeHtml(up.id)}" data-act="toggle-attending" ${classCancelled ? "disabled" : ""}>
+                      ${cancelledByStudent ? "Re-join" : "Keep"}
+                    </button>
+                  </div>
+                </div>
+              `;
+            }).join("") : `<div class="note">No upcoming classes created yet.</div>`}
+          </div>
+
+          ${ups.length ? `
+            <div class="divider"></div>
+            <div class="note"><b>Tasks visibility</b> - Teacher uploads are visible here even when you cancelled.</div>
+          ` : ``}
+          <div class="list">
+            ${(ups.length ? ups : []).map(up => {
+              const studentRsvp = up.studentRsvps?.[studentId] || "attending";
+              const cancelledByStudent = studentRsvp === "not_attending";
+              const tasks = up.tasks || [];
+              if(!tasks.length) return "";
+              return `
+                <div class="card">
+                  <div class="left">
+                    <h3>${escapeHtml(up.title)} - Uploaded Tasks</h3>
+                    <p class="small">
+                      ${escapeHtml(up.dateISO)} - ${cancelledByStudent ? "You cancelled attendance" : "You are attending"}.
+                    </p>
+                    <div class="list" style="margin-top:10px">
+                      ${tasks.map(t => `
+                        <div class="card" style="background:rgba(255,255,255,.52)">
+                          <div class="left">
+                            <h3>${escapeHtml(t.title)}</h3>
+                            <p>${escapeHtml(t.content)}</p>
+                          </div>
+                          <div class="right"><span class="tag info">Task</span></div>
+                        </div>
+                      `).join("")}
+                    </div>
+                  </div>
+                  <div class="right">
+                    <span class="tag ${cancelledByStudent ? "bad" : "ok"}">${cancelledByStudent ? "Cancelled by you" : "In schedule"}</span>
+                  </div>
+                </div>
+              `;
+            }).join("")}
+          </div>
+        `;
+        $("#student-content").innerHTML = html;
+
+        $$("[data-up][data-act]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const upId = btn.dataset.up;
+            const act = btn.dataset.act;
+            const up = state.upcoming.find(x => x.id === upId);
+            if(!up || up.cancelled) return;
+
+            up.studentRsvps = up.studentRsvps || {};
+            if(act === "cancel-rsvp"){
+              if(!confirm("Cancel this upcoming class for yourself?")) return;
+              up.studentRsvps[studentId] = "not_attending";
+              saveState();
+              setStudentContent("upcoming");
+            }else if(act === "toggle-attending"){
+              if(!confirm("Re-join this upcoming class for yourself?")) return;
+              up.studentRsvps[studentId] = "attending";
+              saveState();
+              setStudentContent("upcoming");
+            }
+          });
+        });
+      }
+
+      // -------------------- STUDENT: Week Wise --------------------
+      function renderStudentWeekWise(){
+        ensureTodayIfStale();
+        const ci = state.today.classInfo;
+        const weeks = new Map();
+
+        // today
+        if(ci?.weekNo){
+          weeks.set(ci.weekNo, {
+            weekNo: ci.weekNo,
+            weekDescription: ci.weekDescription || "",
+            todayClass: { title: ci.title, dateISO: state.today.dateISO, timing: formatTimeRange(ci.startTime, ci.endTime) },
+            upcoming: []
+          });
+        }
+
+        for(const up of state.upcoming || []){
+          const w = up.weekNo || "Week";
+          if(!weeks.has(w)){
+            weeks.set(w, { weekNo: w, weekDescription: up.weekDescription || "", todayClass: null, upcoming: [] });
+          }
+          weeks.get(w).upcoming.push(up);
+          if(!weeks.get(w).weekDescription && up.weekDescription) weeks.get(w).weekDescription = up.weekDescription;
+        }
+
+        const weekList = Array.from(weeks.values()).sort((a,b) => String(a.weekNo).localeCompare(String(b.weekNo)));
+
+        const html = `
+          <div class="note">
+            Week-wise description of classes. Each week shows today's class (if it belongs to that week) and upcoming sessions.
+          </div>
+          <div class="list">
+            ${weekList.length ? weekList.map(w => `
+              <div class="card">
+                <div class="left">
+                  <h3>${escapeHtml(w.weekNo)}</h3>
+                  <p>${escapeHtml(w.weekDescription || "")}</p>
+                  <div class="row" style="margin-top:8px">
+                    ${w.todayClass ? `<span class="tag info">Today: ${escapeHtml(w.todayClass.title)} (${escapeHtml(w.todayClass.dateISO)})</span>` : `<span class="tag">No today class in this week</span>`}
+                  </div>
+                  ${w.upcoming?.length ? `
+                    <div class="divider" style="margin:10px 0 6px"></div>
+                    <div class="list">
+                      ${w.upcoming.map(up => `
+                        <div class="card" style="background:rgba(255,255,255,.52)">
+                          <div class="left">
+                            <h3 style="margin-top:2px">${escapeHtml(up.title)}</h3>
+                            <p class="small">${escapeHtml(up.dateISO)} - ${escapeHtml(formatTimeRange(up.startTime, up.endTime))}</p>
+                          </div>
+                          <div class="right">
+                            <span class="tag ${up.cancelled ? "bad" : "ok"}">${up.cancelled ? "Cancelled" : "Scheduled"}</span>
+                          </div>
+                        </div>
+                      `).join("")}
+                    </div>
+                  ` : ""}
+                </div>
+                <div class="right">
+                  <span class="tag">Upcoming: ${escapeHtml(String(w.upcoming?.length || 0))}</span>
+                </div>
+              </div>
+            `).join("") : `<div class="note">No week information yet.</div>`}
+          </div>
+        `;
+        $("#student-content").innerHTML = html;
+      }
+
+      // -------------------- STUDENT: Tasks --------------------
+      function renderStudentTasks(){
+        ensureTodayIfStale();
+        const studentId = session.studentId;
+        const s = studentById(studentId);
+        if(!s){
+          $("#student-content").innerHTML = `<div class="note">Student not found. Log in again.</div>`;
+          return;
+        }
+
+        const today = state.today;
+        const ci = today.classInfo;
+        const attRec = today.attendance?.[studentId] || { status: "present", note: "" };
+        const status = attRec.status === "absent" ? "Absent" : "Present";
+
+        const ups = state.upcoming || [];
+        const allTasks = [];
+
+        // Today tasks
+        (today.tasks || []).forEach(t => {
+          allTasks.push({ target: "today", dateISO: today.dateISO, title: t.title, content: t.content, meta: `${ci.weekNo} - ${status}` });
+        });
+
+        // Upcoming tasks
+        for(const up of ups){
+          for(const t of (up.tasks || [])){
+            const rsvp = up.studentRsvps?.[studentId] || "attending";
+            allTasks.push({ target: "up", dateISO: up.dateISO, title: t.title, content: t.content, meta: `${up.weekNo || ""} - RSVP: ${rsvp === "not_attending" ? "Not attending" : "Attending"}${up.cancelled ? " - Class cancelled" : ""}` });
+          }
+        }
+
+        allTasks.sort((a,b) => String(a.dateISO).localeCompare(String(b.dateISO)));
+
+        const html = `
+          <div class="row">
+            <span class="tag info">Tasks for ${escapeHtml(s.name)}</span>
+            <span class="tag ${status === "Present" ? "ok" : "bad"}">${status} today</span>
+          </div>
+          <div class="note">
+            Tasks uploaded by the teacher are visible here for both present and absent days.
+          </div>
+          <div class="list">
+            ${allTasks.length ? allTasks.map(t => `
+              <div class="card">
+                <div class="left">
+                  <h3>${escapeHtml(t.title)}</h3>
+                  <p>${escapeHtml(t.content)}</p>
+                  <div class="small" style="margin-top:8px">
+                    ${escapeHtml(t.dateISO)} - ${escapeHtml(t.meta)}
+                  </div>
+                </div>
+                <div class="right">
+                  <span class="tag">Task</span>
+                </div>
+              </div>
+            `).join("") : `<div class="note">No tasks uploaded yet.</div>`}
+          </div>
+        `;
+        $("#student-content").innerHTML = html;
+      }
+
+      // -------------------- Router --------------------
+      $("#cta-enter").addEventListener("click", () => showView("student-login"));
+      $("#cta-teacher").addEventListener("click", () => showView("teacher-login"));
+
+      $("#btn-logout").addEventListener("click", logout);
+
+      // navbar navigation
+      $$(".pill[data-go]").forEach(el => {
+        el.addEventListener("click", () => {
+          const id = el.dataset.go;
+          showView(id);
+        });
+      });
+
+      $("#t-load-demo").addEventListener("click", () => {
+        seedDemoData();
+        alert("Demo data loaded! Login with username: shubhradeep");
+        $("#t-username").value = "shubhradeep";
+        $("#t-code").value = "";
+      });
+
+      $("#t-login").addEventListener("click", () => {
+        state = loadState();
+        ensureTodayIfStale();
+        const teacher = validateTeacherLogin();
+        if(!teacher) return;
+        saveState();
+        session = { role: "teacher", name: teacher.displayName, teacherId: teacher.id, studentId: null };
+        saveSession();
+        setTeacherContent("today");
+        showView("teacher-portal");
+        $("#btn-logout").style.display = "inline-flex";
+      });
+
+      $("#s-refresh").addEventListener("click", () => {
+        refreshStudentSelect();
+      });
+
+      $("#s-login").addEventListener("click", () => {
+        state = loadState();
+        ensureTodayIfStale();
+        const stu = validateStudentLogin();
+        if(!stu) return;
+        session = { role: "student", name: stu.name, studentId: stu.id };
+        saveSession();
+        setStudentContent("today");
+        showView("student-portal");
+        $("#btn-logout").style.display = "inline-flex";
+      });
+
+      // Teacher nav is handled by the carousel cards (setupTeacherCarousel)
+      // Student tabs
+      $("#student-tabs").addEventListener("click", (e) => {
+        const tabEl = e.target.closest(".tab");
+        if(!tabEl) return;
+        const tab = tabEl.dataset.tab;
+        setStudentContent(tab);
+      });
+
+      // -------------------- Boot --------------------
+      function boot(){
+        ensureTodayIfStale();
+        state = loadState();
+        // carousel animation on home
+        setupCarousel();
+        // teacher portal carousel
+        setupTeacherCarousel();
+
+        // default student list if user already logged in as student
+        refreshStudentSelect();
+
+        animateHeaderIn();
+
+        if(session.role === "teacher"){
+          setTeacherContent("today");
+          showView("teacher-portal");
+        }else if(session.role === "student"){
+          setStudentContent("today");
+          showView("student-portal");
+        }else{
+          showView("home");
+        }
+      }
+
+      // Start
+      boot();
+    })();
+  </script>
+</body>
+</html>
+
